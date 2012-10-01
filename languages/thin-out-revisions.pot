@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-30 19:33+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: thin-out-revisions.php:76
+#, php-format
+msgid "Remove a revision &quot;%s&quot;"
+msgstr ""
+
+#: thin-out-revisions.php:78
+#, php-format
+msgid ""
+"Once you return <a href=\"%s\">post-edit page</a>, you could continue "
+"working with revisions. Or reselect existing revisions and press &quot;"
+"%s&quot; button."
+msgstr ""
+
+#: thin-out-revisions.php:85
+#, php-format
+msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
+msgstr ""
+
+#: thin-out-revisions.php:88
+msgid "To update the compare-revision table, reload this page."
+msgstr ""
+
+#: thin-out-revisions.php:93
+msgid "You really remove?"
+msgstr ""
+
+#: thin-out-revisions.php:94
+msgid "Processing ..."
+msgstr ""
+
+#: thin-out-revisions.php:95
+msgid "Following revisions will be removed."
+msgstr ""
+
+#: thin-out-revisions.php:96
+#, php-format
+msgid ""
+"To change revisions to remove, you have to press &quot;%s&quot; button after "
+"selection."
+msgstr ""
+
+#: thin-out-revisions.php:97
+msgid "Error in communication with server"
+msgstr ""
+
+#: thin-out-revisions.php:98
+msgid "Thin Out Revisions"
+msgstr ""
+
+#: thin-out-revisions.php:153
+#, php-format
+msgid "%s revision removed."
+msgid_plural "%s revisions removed."
+msgstr[0] ""
+msgstr[1] ""
+
+#: thin-out-revisions.php:156
+msgid "Wrong session. Unable to process."
+msgstr ""
