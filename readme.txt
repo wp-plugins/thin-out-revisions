@@ -3,32 +3,47 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
-Tested up to: 3.4.2
-Stable tag: 1.0
+Tested up to: 3.5
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Thin Out Revisions is a plugin to thin out post/page revisions manually. 
+Thin Out Revisions is a plugin to thin out post/page revisions. 
 
 == Description ==
 
+= Abstract =
+
 As its default behavior, WordPress always makes a new revision when you save your post. 
-In addition, this also happens when you do a preview because you implicitly save your post when you press the preview button.
+This also happens when you do a preview before publication.
 This is too often even if you like revision control. Thin Out Revisions (TOR), a plugin 
-for WordPress, will help you thin out revisions manually.
+for WordPress, will help you to keep unwanted revisions out.
+
+= Basic Feature =
 
 After activating this plugin, you will see a button to thin out revisions below the table 
 on revision.php, where you compare revisions. To thin out, simply click the button.
 
 If you have selected revisions having intermediate revisions between them, TOR button is to remove the intermediates. 
 Or if you have selected revisions next to each other, TOR button is to remove the older selected one. 
-To thin out intermediates between selected revisions is very intuitive operation and easy to use. 
-But you may also want to remove the oldest revision (somtimes a enpty revision!), so I have made these two behaviors. 
-Please carefully check a message on the button and displayed revisions to remove.
+Please carefully check a message on the button and displayed revisions to remove before press it.
 
-TOR uses a standard function, wp_delete_post_revision, to delete revisions. 
-So, it also deletes related data and works fine in multisite environment. 
-If you like revision control, you will like it. Download TOR today for your happy blogging.
+= Additional Features in 1.1 =
+
+TOR 1.1 introduced new features below.
+
+* Disable revisioning while quick editing
+* Disable revisioning while bulk editing
+* Delete revisions on initial publication
+
+To use these powerful new features, go to the 'Settings' - 'Thin Out Revisions' admin page and turn them on.
+
+= More to Describe =
+
+* TOR works fine in multisite environment. 
+
+If you like it, please share it among your friends by doing Tweet or Like from the plugin home page.
+It will encourage the author a lot.
 
 Related Links:
 
@@ -50,17 +65,29 @@ Don't forget to activate the plugin before use it.
 Change is only a new button on revision.php.
 
 = Where is revision.php? =
-You can go to revision.php by choosing a revision on 'Edit Post'/'Edit Page' screen.
-If you can't see any revisions on the 'Edit Post'/'Edit Page' screen, check the 'Revisions' option in Screen Options at top-right of the page.
-If you can't see the 'Revisions' option in the menu, I guess you still don't have any revisions. So edit post/page and save it first.
+You can go to revision.php by choosing a revision on 'Edit Post' or 'Edit Page' screen.
+If you can't see any revisions on the screen, check the 'Revisions' option in Screen Options at top-right of the page.
+If you can't see the 'Revisions' option in the menu, I guess you still don't have any revisions. So edit the post (page) and save it first.
+
+= TOR doesn't remove revisions on publication. =
+'Delete revisions on initial publication' feature is effective only when you first publish the post.
+It has no effects on posts which is once published and changed to 'draft' status later.
+Also no effects on posts published from 'pending' status.
 
 == Screenshots ==
 
 1. A button to remove intermediate revisions
 2. A button to remove a single revision
 3. A screen after deleting some revisions
+4. New features introduced in 1.1
 
 == Changelog ==
+
+= 1.1 =
+* added the 'Disable revisioning while quick editing' feature
+* added the 'Disable revisioning while bulk editing' feature
+* added the 'Delete revisions on initial publication' feature
+* the result message after deleting revisions is now colored
 
 = 1.0 =
 * The version number is now 1.0. Though it's not a substantial change, many people will feel it sounds very formal.
@@ -73,6 +100,9 @@ If you can't see the 'Revisions' option in the menu, I guess you still don't hav
 * The first version introduced in wordpress.org repository.
 
 == Upgrade Notice ==
+
+= 1.1 =
+Introduced new features.
 
 = 1.0 =
 Better visual effects on deleted revisions. Now you can easily identify them.

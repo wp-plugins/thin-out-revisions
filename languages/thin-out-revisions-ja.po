@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-29 16:13+0900\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
+"POT-Creation-Date: 2012-12-13 22:53:36+00:00\n"
 "PO-Revision-Date: 2012-09-29 16:16+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: English\n"
@@ -17,65 +17,99 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: thin-out-revisions.php:76
-#, php-format
+#: thin-out-revisions.php:94
 msgid "Remove a revision &quot;%s&quot;"
 msgstr "リビジョン「%s」を消去"
 
-#: thin-out-revisions.php:78
-#, php-format
+#: thin-out-revisions.php:96
 msgid ""
-"Once you return <a href=\"%s\">post-edit page</a>, you could continue "
+"Once you return to <a href=\"%s\">the edit page</a>, you could continue "
 "working with revisions. Or reselect existing revisions and press &quot;"
 "%s&quot; button."
 msgstr ""
-"リビジョン編集を続けるには一度<a href=\"%s\">投稿編集ページ</a>にお戻りいただくか、"
-"残っているリビジョンを選択し直して「%s」ボタンを押してください。"
+"リビジョン編集を続けるには一度<a href=\"%s\">編集ページ</a>にお戻りいただ"
+"くか、残っているリビジョンを選択し直して「%s」ボタンを押してください。"
 
-#: thin-out-revisions.php:85
-#, php-format
+#: thin-out-revisions.php:96 thin-out-revisions.php:115
+msgid "Compare Revisions"
+msgstr ""
+
+#: thin-out-revisions.php:104
 msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
 msgstr "「%s」と「%s」の間のリビジョンを消去"
 
-#: thin-out-revisions.php:88
+#: thin-out-revisions.php:107
 msgid "To update the compare-revision table, reload this page."
 msgstr "最新の情報を得るためにこのページをリロードしてください。"
 
-#: thin-out-revisions.php:93
+#: thin-out-revisions.php:112
 msgid "You really remove?"
 msgstr "本当に削除してよいですか？"
 
-#: thin-out-revisions.php:94
+#: thin-out-revisions.php:113
 msgid "Processing ..."
 msgstr "実行中．．．"
 
-#: thin-out-revisions.php:95
+#: thin-out-revisions.php:114
 msgid "Following revisions will be removed."
 msgstr "以下のリビジョンが消去されます。"
 
-#: thin-out-revisions.php:96
-#, php-format
+#: thin-out-revisions.php:115
 msgid ""
 "To change revisions to remove, you have to press &quot;%s&quot; button after "
 "selection."
 msgstr ""
-"他のリビジョンを削除したい場合は比較するリビジョンを選び直し「%s」ボタンを押してください。"
+"他のリビジョンを削除したい場合は比較するリビジョンを選び直し「%s」ボタンを押"
+"してください。"
 
-#: thin-out-revisions.php:97
+#: thin-out-revisions.php:116
 msgid "Error in communication with server"
 msgstr "サーバーとの通信エラーが発生しました。"
 
-#: thin-out-revisions.php:98
+#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.0.2)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: thin-out-revisions.php:117
 msgid "Thin Out Revisions"
 msgstr "リビジョンの削除"
 
-#: thin-out-revisions.php:152
-#, php-format
+#: thin-out-revisions.php:184
 msgid "%s revision removed."
 msgid_plural "%s revisions removed."
 msgstr[0] "%s個のリビジョンが削除されました。"
 msgstr[1] "%s個のリビジョンが削除されました。"
 
-#: thin-out-revisions.php:155
+#: thin-out-revisions.php:191
 msgid "Wrong session. Unable to process."
 msgstr "不正なセッションです。"
+
+#: thin-out-revisions.php:234 thin-out-revisions.php:274
+msgid "Disable revisioning while quick editing"
+msgstr "クイック編集時はリビジョンを作成しない"
+
+#: thin-out-revisions.php:236 thin-out-revisions.php:278
+msgid "Disable revisioning while bulk editing"
+msgstr "一括編集時はリビジョンを作成しない"
+
+#: thin-out-revisions.php:238 thin-out-revisions.php:282
+msgid "Delete all revisions on initial publication"
+msgstr "初回公開時にそれまでのリビジョンを削除"
+
+#: thin-out-revisions.php:308
+msgid "Save Changes"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://en.hetarena.com/thin-out-revisions"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A plugin to thin out post/page revisions manually."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Hirokazu Matsui"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://en.hetarena.com/"
+msgstr ""
