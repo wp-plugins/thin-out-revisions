@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
 Tested up to: 3.5
-Stable tag: 1.1
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,6 +48,7 @@ It will encourage the author a lot.
 Related Links:
 
 * [Plugin Homepage](http://en.hetarena.com/thin-out-revisions "Plugin Homepage")
+* Related Post: ['The truth of WordPress revision management'](http://en.hetarena.com/archives/139)
 
 == Installation ==
 
@@ -83,11 +84,15 @@ Also no effects on posts published from 'pending' status.
 
 == Changelog ==
 
+= 1.1.1 =
+* [Fixed] more proper operation of once-published flag. Update needed for users who use the feature of 'Delete revisions on initial publication'
+* A better interactive message to avoid unintended execution
+
 = 1.1 =
-* added the 'Disable revisioning while quick editing' feature
-* added the 'Disable revisioning while bulk editing' feature
-* added the 'Delete revisions on initial publication' feature
-* the result message after deleting revisions is now colored
+* Added the 'Disable revisioning while quick editing' feature
+* Added the 'Disable revisioning while bulk editing' feature
+* Added the 'Delete revisions on initial publication' feature
+* The result message after deleting revisions is now colored
 
 = 1.0 =
 * The version number is now 1.0. Though it's not a substantial change, many people will feel it sounds very formal.
