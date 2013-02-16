@@ -3,14 +3,18 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually. 
-Version: 1.1
+Version: 1.1.1
 Author: Hirokazu Matsui
 Author URI: http://en.hetarena.com/
 License: GPLv2
   */
 
-define( 'HM_TOR_VERSION', '1.1' );
+define( 'HM_TOR_VERSION', '1.1.1' );
 
+/*
+Nice to have:
+- Disable date-change while bulk/quick editing. (but it's difficult for me)
+ */
 
 
 class HM_TOR_Plugin_Loader {
@@ -21,7 +25,8 @@ class HM_TOR_Plugin_Loader {
     add_action( 'admin_head',             array( &$this, 'hm_tor_message' ), 20 );
     add_action( 'wp_enqueue_scripts',     array( &$this, 'hm_tor_scripts' ), 20);
     add_action( 'wp_ajax_hm_tor_do_ajax', array( &$this, 'hm_tor_do_ajax' ) );
-    add_action( 'post_updated',           array( &$this, 'delete_revisions_on_1st_publishment' ), 20, 3 );
+    add_action( 'post_updated',           array( &$this, 'post_updated' ), 20, 3 );
+    add_action( 'transition_post_status', array( &$this, 'transition_post_status' ), 10, 3 );
 
     add_action( 'admin_init',             array( &$this, 'admin_init' ) );
     add_action( 'admin_menu',             array( &$this, 'admin_menu' ) );
@@ -115,10 +120,17 @@ class HM_TOR_Plugin_Loader {
     $msg_info2   = sprintf( __( "To change revisions to remove, you have to press &quot;%s&quot; button after selection.",'thin-out-revisions' ), __( 'Compare Revisions' ) );
     $msg_error   = __( 'Error in communication with server', 'thin-out-revisions' );
     $msg_title   = __( 'Thin Out Revisions', 'thin-out-revisions' );
+    $msg_after_selection = __( "You selected revisions after loading this page but revisions to remove are determined at the time of loading. Are you sure to proceed?", 'thin-out-revisions' );
 
     $src = <<<JQSRC
 <script type="text/javascript">
   jQuery(document).ready(function() {
+    var modified = false;
+
+    jQuery('.post-revisions input[type="radio"]').click(function() {
+      modified = true;
+    });
+
     jQuery('#wpbody-content .wrap').append(
       '<h3>$msg_title</h3>'
       + "<form><input type='button' id='mh_rto_ajax' class='button-secondary' value='$buttonval' /></form>"
@@ -128,6 +140,9 @@ class HM_TOR_Plugin_Loader {
     );
 
     jQuery('#mh_rto_ajax').click(function() {
+      if (modified && !confirm('$msg_after_selection') ) {
+        return;
+      }
       if (confirm('$msg_confirm') != true) {
         return;
       }
@@ -209,12 +224,13 @@ JQSRC;
     wp_save_post_revision( $post );
   }
 
-  function delete_revisions_on_1st_publishment($post_id, $post, $post_before) {
+  function post_updated($post_id, $post, $post_before) {
+    // delete_revisions_on_1st_publishment
     if ( $this->get_hm_tor_option( 'del_on_publish' ) == 'on' &&
          $post->post_status == 'publish' && 
          get_post_meta( $post_id, '_hm_tor_status', true ) != 'published' ) {
 
-      // do nothing if previous status is 'pending'
+      // do nothing if previous status is other than 'draft'
       if ( $post_before->post_status == 'draft' ) {
         $revisions = wp_get_post_revisions( $post_id );
         foreach ( $revisions as $rev ) {
@@ -225,6 +241,16 @@ JQSRC;
       }
 
       add_post_meta( $post_id, '_hm_tor_status', 'published', true );
+    }
+  }
+
+  function transition_post_status($new_status, $old_status, $post) {
+    // This function is called before post_updated in wp_insert_post.
+    // So I can't mark the _hm_tor_status depending on $new_status.
+    // All I can do is to mark it for future update when the status is changed from 'publish' to something.
+
+    if ($old_status == 'publish') {
+      add_post_meta( $post->ID, '_hm_tor_status', 'published', true );
     }
   }
 
