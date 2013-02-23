@@ -3,14 +3,18 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually. 
-Version: 1.1
+Version: 1.2
 Author: Hirokazu Matsui
 Author URI: http://en.hetarena.com/
 License: GPLv2
   */
 
-define( 'HM_TOR_VERSION', '1.1' );
+define( 'HM_TOR_VERSION', '1.2' );
 
+/*
+Nice to have:
+- Disable date-change while bulk/quick editing. (but it's quite difficult)
+ */
 
 
 class HM_TOR_Plugin_Loader {
@@ -21,7 +25,8 @@ class HM_TOR_Plugin_Loader {
     add_action( 'admin_head',             array( &$this, 'hm_tor_message' ), 20 );
     add_action( 'wp_enqueue_scripts',     array( &$this, 'hm_tor_scripts' ), 20);
     add_action( 'wp_ajax_hm_tor_do_ajax', array( &$this, 'hm_tor_do_ajax' ) );
-    add_action( 'post_updated',           array( &$this, 'delete_revisions_on_1st_publishment' ), 20, 3 );
+    add_action( 'post_updated',           array( &$this, 'post_updated' ), 20, 3 );
+    add_action( 'transition_post_status', array( &$this, 'transition_post_status' ), 10, 3 );
 
     add_action( 'admin_init',             array( &$this, 'admin_init' ) );
     add_action( 'admin_menu',             array( &$this, 'admin_menu' ) );
@@ -115,10 +120,17 @@ class HM_TOR_Plugin_Loader {
     $msg_info2   = sprintf( __( "To change revisions to remove, you have to press &quot;%s&quot; button after selection.",'thin-out-revisions' ), __( 'Compare Revisions' ) );
     $msg_error   = __( 'Error in communication with server', 'thin-out-revisions' );
     $msg_title   = __( 'Thin Out Revisions', 'thin-out-revisions' );
+    $msg_after_selection = __( "You selected revisions after loading this page but revisions to remove were determined at the time of loading. Are you sure to proceed?", 'thin-out-revisions' );
 
     $src = <<<JQSRC
 <script type="text/javascript">
   jQuery(document).ready(function() {
+    var modified = false;
+
+    jQuery('.post-revisions input[type="radio"]').click(function() {
+      modified = true;
+    });
+
     jQuery('#wpbody-content .wrap').append(
       '<h3>$msg_title</h3>'
       + "<form><input type='button' id='mh_rto_ajax' class='button-secondary' value='$buttonval' /></form>"
@@ -128,6 +140,9 @@ class HM_TOR_Plugin_Loader {
     );
 
     jQuery('#mh_rto_ajax').click(function() {
+      if (modified && !confirm('$msg_after_selection') ) {
+        return;
+      }
       if (confirm('$msg_confirm') != true) {
         return;
       }
@@ -173,12 +188,18 @@ JQSRC;
       $deleted = array();
       foreach ( $posts as $revid ) {
         // Without the 'get_post' check, WP makes warnings.
-        if ( get_post($revid) && current_user_can( 'edit_post', $revid ) ) {
-          if ( wp_delete_post_revision( $revid ) ) {
-            array_push( $deleted, $revid );
+        $post = get_post($revid);
+
+        if ( $post ) {
+          $post_type = get_post_type($post->post_parent);
+          if ( ( $post_type == 'post' && current_user_can( 'edit_post', $revid ) )
+            || ( $post_type == 'page' && current_user_can( 'edit_page', $revid ) ) )  {
+            if ( wp_delete_post_revision( $revid ) ) {
+              array_push( $deleted, $revid );
+            }
           }
         }
-      }
+      } // foreach
       echo json_encode( array(
         "result" => "success", 
         "msg" => sprintf( _n( '%s revision removed.', '%s revisions removed.', count( $deleted ), 'thin-out-revisions' ), count( $deleted ) ),
@@ -209,12 +230,13 @@ JQSRC;
     wp_save_post_revision( $post );
   }
 
-  function delete_revisions_on_1st_publishment($post_id, $post, $post_before) {
+  function post_updated($post_id, $post, $post_before) {
+    // delete_revisions_on_1st_publishment
     if ( $this->get_hm_tor_option( 'del_on_publish' ) == 'on' &&
          $post->post_status == 'publish' && 
          get_post_meta( $post_id, '_hm_tor_status', true ) != 'published' ) {
 
-      // do nothing if previous status is 'pending'
+      // do nothing if previous status is other than 'draft'
       if ( $post_before->post_status == 'draft' ) {
         $revisions = wp_get_post_revisions( $post_id );
         foreach ( $revisions as $rev ) {
@@ -223,8 +245,20 @@ JQSRC;
           }
         }
       }
+    }
 
+    if ( $post->post_status == 'publish' ) {
       add_post_meta( $post_id, '_hm_tor_status', 'published', true );
+    }
+  }
+
+  function transition_post_status($new_status, $old_status, $post) {
+    // This function is called before post_updated in wp_insert_post.
+    // So I can't mark the _hm_tor_status depending on $new_status.
+    // All I can do is to mark it for future update when the status is changed from 'publish' to something.
+
+    if ($old_status == 'publish') {
+      add_post_meta( $post->ID, '_hm_tor_status', 'published', true );
     }
   }
 
@@ -313,5 +347,127 @@ JQSRC;
 
 } // end of class HM_TOR_Plugin_Loader
 
-$hm_tor_plugin_loader = new HM_TOR_Plugin_Loader();
+class HM_TOR_RevisionMemo_Loader {
 
+  // Constructor
+  function HM_TOR_RevisionMemo_Loader() {
+
+    // Build user interface
+    add_action( 'add_meta_boxes',        array( &$this, 'add_meta_box' ) );
+
+    // Call update_post_meta() after post/page saved
+    // update_post_meta() creates a new entry if the key doesn't exist.
+    add_action( 'save_post',             array( &$this, 'save_post' ) );
+
+    // Showing text input area for memo in revision.php.
+    add_action( 'admin_head',            array( &$this, 'admin_head' ) );
+  }
+
+  function admin_head() {
+    global $left, $right, $post, $wpdb;
+
+    $uri = parse_url( $_SERVER['REQUEST_URI'] );  
+
+    $revision_php = false;
+    if ( strpos( $uri['path'], '/revision.php' ) ) {
+      $revision_php = true;
+    }
+    else if ( strpos( $uri['path'], '/post.php' ) ) {
+    }
+    else {
+      return;
+    }
+
+    $memos = $wpdb->get_results(
+      "
+      SELECT post_id, meta_value
+      FROM $wpdb->posts, $wpdb->postmeta
+      WHERE post_parent = $post->ID
+      AND $wpdb->postmeta.post_id = $wpdb->posts.ID
+      AND meta_key = '_hm_tor_memo'
+      ORDER BY post_date DESC
+      "
+    );
+
+    $postmemo = get_post_meta($post->ID, "_hm_tor_memo", true);
+
+    if ( !$memos && !$postmemo ) {
+      return;
+    }
+    
+?>
+<script type='text/javascript'>
+var memos = {
+<?php
+    foreach ($memos as $m) {
+      echo "'$m->post_id': '" . esc_js($m->meta_value) . "',\n";
+    }
+    echo "'$post->ID': '" . esc_js($postmemo) . "'\n";
+?>
+};
+jQuery(document).ready(function() {
+  jQuery('.post-revisions a').each(function() {
+    var parse_url = /(post|revision)=([0-9]+)&action=edit/;
+    var result = parse_url.exec(jQuery(this).attr('href'));
+    if (result && memos[result[2]]) {
+<?php
+    if ( $revision_php ) {
+?>
+      jQuery(this).parent().next().append(' [' + memos[result[2]] + ']');
+<?php
+    }
+    else {
+?>
+      jQuery(this).after(' [' + memos[result[2]] + ']');
+<?php
+    }
+?>
+    }
+  });
+
+  jQuery('#hm_tor_memo_current').html(' <?php if ($postmemo) { echo "[" . esc_js($postmemo) . "]"; } ?>');
+});
+</script>
+<?php
+    } // end of 'admin_head'
+
+  function add_meta_box() {
+    add_meta_box( 'hm-he-memo', __('Revision Memo', 'thin-out-revisions'), array( &$this, 'hm_tor_mbfunction' ), 'post', 'normal', 'core');
+    add_meta_box( 'hm-he-memo', __('Revision Memo', 'thin-out-revisions'), array( &$this, 'hm_tor_mbfunction' ), 'page', 'normal', 'core');
+  }
+
+  function hm_tor_mbfunction( $post ) {
+    wp_nonce_field( plugin_basename( __FILE__ ), 'hm_tor_nonce' );
+    $memo = ''; // always empty
+    echo __("Memo: ", "thin-out-revisions");
+?>
+<input type="text" name="hm_tor_memo" value="<?php echo esc_attr( $memo ); ?>" style="width: 300px;" /><span id="hm_tor_memo_current"></span>
+<?php
+
+  }
+
+  function save_post( $post_id ) {
+    global $wpdb;
+
+    if ( wp_is_post_revision( $post_id ) ) {
+      if ( ($parent = $wpdb->get_col( $wpdb->prepare( "SELECT post_parent FROM $wpdb->posts WHERE ID = '%s'", $post_id ) ) ) ) {
+        foreach ( (array) $parent as $p ) {
+          $wpdb->query( $wpdb->prepare( "UPDATE $wpdb->postmeta SET post_id = '%s'  WHERE post_id = '%s' AND meta_key = '_hm_tor_memo' ", $post_id, $p ) );
+        }
+      }
+    }
+    else {
+      if ( isset( $_POST['hm_tor_nonce'] ) && wp_verify_nonce( $_POST['hm_tor_nonce'], plugin_basename( __FILE__ ) ) &&
+           isset( $_POST['hm_tor_memo'] ) && $_POST['hm_tor_memo'] !== '' && 
+           ( ($_POST['post_type'] == 'post' && current_user_can( 'edit_post', $post_id ) )
+          || ($_POST['post_type'] == 'page' && current_user_can( 'edit_page', $post_id ) ) ) ) {
+        update_post_meta( $post_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
+      }
+    }
+  }
+
+} // end of 'HM_TOR_RevisionMemo_Loader
+
+// Load HM_TOR_Plugin_Loader first.
+$hm_tor_plugin_loader       = new HM_TOR_Plugin_Loader();
+$hm_tor_revisionmemo_loader = new HM_TOR_RevisionMemo_Loader();
