@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
-"POT-Creation-Date: 2013-02-16 18:24:51+00:00\n"
+"POT-Creation-Date: 2013-02-23 07:25:09+00:00\n"
 "PO-Revision-Date: 2012-09-29 16:16+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: English\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: thin-out-revisions.php:99
+#: thin-out-revisions.php:102
 msgid "Remove a revision &quot;%s&quot;"
 msgstr "リビジョン「%s」を消去"
 
-#: thin-out-revisions.php:101
+#: thin-out-revisions.php:104
 msgid ""
 "Once you return to <a href=\"%s\">the edit page</a>, you could continue "
 "working with revisions. Or reselect existing revisions and press &quot;"
@@ -30,31 +30,31 @@ msgstr ""
 "リビジョン編集を続けるには一度<a href=\"%s\">編集ページ</a>にお戻りいただく"
 "か、残っているリビジョンを選択し直して「%s」ボタンを押してください。"
 
-#: thin-out-revisions.php:101 thin-out-revisions.php:120
+#: thin-out-revisions.php:104 thin-out-revisions.php:123
 msgid "Compare Revisions"
 msgstr ""
 
-#: thin-out-revisions.php:109
+#: thin-out-revisions.php:112
 msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
 msgstr "「%s」と「%s」の間のリビジョンを消去"
 
-#: thin-out-revisions.php:112
+#: thin-out-revisions.php:115
 msgid "To update the compare-revision table, reload this page."
 msgstr "最新の情報を得るためにこのページをリロードしてください。"
 
-#: thin-out-revisions.php:117
+#: thin-out-revisions.php:120
 msgid "You really remove?"
 msgstr "本当に削除してよいですか？"
 
-#: thin-out-revisions.php:118
+#: thin-out-revisions.php:121
 msgid "Processing ..."
 msgstr "実行中．．．"
 
-#: thin-out-revisions.php:119
+#: thin-out-revisions.php:122
 msgid "Following revisions will be removed."
 msgstr "以下のリビジョンが消去されます。"
 
-#: thin-out-revisions.php:120
+#: thin-out-revisions.php:123
 msgid ""
 "To change revisions to remove, you have to press &quot;%s&quot; button after "
 "selection."
@@ -62,48 +62,57 @@ msgstr ""
 "他のリビジョンを削除したい場合は比較するリビジョンを選び直し「%s」ボタンを押"
 "してください。"
 
-#: thin-out-revisions.php:121
+#: thin-out-revisions.php:124
 msgid "Error in communication with server"
 msgstr "サーバーとの通信エラーが発生しました。"
 
-#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.1.1)  #-#-#-#-#
+#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: thin-out-revisions.php:122
+#: thin-out-revisions.php:125
 msgid "Thin Out Revisions"
 msgstr "リビジョンの削除"
 
-#: thin-out-revisions.php:123
+#: thin-out-revisions.php:126
 msgid ""
-"You selected revisions after loading this page but revisions to remove are "
+"You selected revisions after loading this page but revisions to remove were "
 "determined at the time of loading. Are you sure to proceed?"
-msgstr "ページがロードされた後にリビジョンを選択しても削除対象は変化しません。"
-"削除対象は意図した通りですか？"
+msgstr ""
+"ページがロードされた後にリビジョンを選択しても削除対象は変化しません。削除対"
+"象は意図した通りですか？"
 
-#: thin-out-revisions.php:199
+#: thin-out-revisions.php:202
 msgid "%s revision removed."
 msgid_plural "%s revisions removed."
 msgstr[0] "%s個のリビジョンが削除されました。"
 msgstr[1] "%s個のリビジョンが削除されました。"
 
-#: thin-out-revisions.php:206
+#: thin-out-revisions.php:209
 msgid "Wrong session. Unable to process."
 msgstr "不正なセッションです。"
 
-#: thin-out-revisions.php:260 thin-out-revisions.php:300
+#: thin-out-revisions.php:265 thin-out-revisions.php:305
 msgid "Disable revisioning while quick editing"
 msgstr "クイック編集時はリビジョンを作成しない"
 
-#: thin-out-revisions.php:262 thin-out-revisions.php:304
+#: thin-out-revisions.php:267 thin-out-revisions.php:309
 msgid "Disable revisioning while bulk editing"
 msgstr "一括編集時はリビジョンを作成しない"
 
-#: thin-out-revisions.php:264 thin-out-revisions.php:308
+#: thin-out-revisions.php:269 thin-out-revisions.php:313
 msgid "Delete all revisions on initial publication"
 msgstr "初回公開時にそれまでのリビジョンを削除"
 
-#: thin-out-revisions.php:334
+#: thin-out-revisions.php:339
 msgid "Save Changes"
 msgstr ""
+
+#: thin-out-revisions.php:432 thin-out-revisions.php:433
+msgid "Revision Memo"
+msgstr "リビジョンメモ"
+
+#: thin-out-revisions.php:439
+msgid "Memo: "
+msgstr "メモを入力: "
 
 #. Plugin URI of the plugin/theme
 msgid "http://en.hetarena.com/thin-out-revisions"
