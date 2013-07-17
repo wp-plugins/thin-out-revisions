@@ -3,50 +3,68 @@
 	$(document).ready(function () {
 
 		setTimeout(function () {
-			if (wp && wp.revisions && wp.revisions.view && wp.revisions.view.Diff &&
-					wp.revisions.Diff.revisionView) {
-
+			if (wp && wp.revisions && wp.revisions.view && wp.revisions.view.Meta &&
+					wp.revisions.view.Controls) {
+				var slider_model = 0;
 				TOR = {
-					View: wp.revisions.view.Diff.extend({
+					View: wp.revisions.view.Meta.extend({
 						events: {},
 
 						initialize: function () {
+							wp.revisions.view.Meta.prototype.initialize.apply(this);
 							_.bindAll(this, 'render');
 							this.events = _.extend({'click #tor-thin-out': 'thinOut'},
-									wp.revisions.view.Diff.prototype.events);
+									wp.revisions.view.Meta.prototype.events);
+							this.listenTo(this.model, 'change:compareTwoMode', this.render);
+
+							if (slider_model) {
+								this.listenTo(slider_model, 'update:slider', this.render);
+							}
 						},
 
 						render: function () {
-							wp.revisions.view.Diff.prototype.render.apply(this);
-							var fromid = this.model.at(wp.revisions.Diff.leftDiff - 1).get('ID');
-							var toid = this.model.at(wp.revisions.Diff.rightDiff - 1).get('ID')
+
+							wp.revisions.view.Meta.prototype.render.apply(this);
+
+							if (this.model.get('compareTwoMode')) {
+								var s = this.$el.html().replace(/<\/div>\s*$/i, '');
+
+								this.$el.html(s + '<div id="tor-div" class="diff-header"><div class="diff-title"><strong>&nbsp;</strong><span id="tor-msg" style="margin: 0 10px;">'
+								+ hm_tor_params.msg_thin_out + '</span><input id="tor-thin-out" class="button button-primary" type="submit" value="Thin Out" /></div></div></div>');
+
+							}
+
+							var fromid = this.model.get('from').get('id');
+							var toid = this.model.get('to').get('id');
 							if (typeof(memos) !== 'undefined' && memos[fromid]) {
 								$('#diff-title-from').append('[' + memos[fromid] + ']');
 							}
 							if (typeof(memos) !== 'undefined' && memos[toid]) {
 								$('#diff-title-to').append('[' + memos[toid] + ']');
 							}
-							if (!wp.revisions.Diff.singleRevision) {
-								$('#diff-header-to').after('<div id="tor-div" class="diff-header"><div class="diff-title"><strong>&nbsp;</strong><span id="tor-msg" style="margin: 0 10px;">Remove revisions between two revisions above</span><input id="tor-thin-out" class="button button-primary" type="submit" value="Thin Out" /></div></div>');
-							}
 							return this;
 						},
 
 						thinOut: function () {
 							var revs = '';
-							for (var i = wp.revisions.Diff.leftDiff; i < wp.revisions.Diff.rightDiff - 1; i++) {
-								revs = revs + (i == wp.revisions.Diff.leftDiff ? '' : '-') + this.model.at(i).get('ID');
+							var revs_disp = '';
+							var from = this.model.revisions.indexOf(this.model.get('from')) + 1;
+							var to   = this.model.revisions.indexOf(this.model.get('to'));
+
+							for (var i = from; i < to; i++) {
+								revs = revs + (i === from ? '' : '-') + this.model.revisions.at(i).get('id');
+								revs_disp = revs_disp + (i === from ? '' : ',') + this.model.revisions.at(i).get('id');
 							}
-							var fromid = this.model.at(wp.revisions.Diff.leftDiff - 1).get('ID');
-							var toid = this.model.at(wp.revisions.Diff.rightDiff - 1).get('ID');
 
 							if (revs === '') {
 								alert(hm_tor_params.msg_nothing_to_remove);
 								return false;
 							}
-							if (confirm(hm_tor_params.msg_thinout_comfirmation + ' (ID: ' + revs + ')') != true) {
+							if (confirm(hm_tor_params.msg_thinout_comfirmation + ' (ID: ' + revs_disp + ')') != true) {
 								return false;
 							}
+
+							$('#tor-thin-out').attr('value', 'Processing...').attr('disabled', 'disabled');
 
 							$.ajax({
 								url     : hm_tor_params.ajaxurl,
@@ -59,7 +77,8 @@
 							})
 									.success(function (response) {
 								alert(hm_tor_params.msg_remove_completed);
-								location.replace('./revision.php?action=edit&revision=' + hm_tor_params.latest_revision);
+								//location.replace('./revision.php?from=' + from + '&to=' + to); // it doesn't work...
+								location.replace('./revision.php?revision=' + hm_tor_params.latest_revision);
 							})
 									.error(function () {
 								alert(hm_tor_params.msg_ajax_error);
@@ -68,12 +87,32 @@
 							return false;
 						}
 					}) /* View */
-				};
+				}; /* TOR */
+
+				var cv = (wp.revisions.view.frame.views.get('.revisions-control-frame'))[0];
+				var mv = 0;
+				var sv = 0;
+
+				var i;
+				for (i = 0; i < cv.views._views[''].length; i++) {
+					if (cv.views._views[''][i].className === 'revisions-meta') {
+						mv = cv.views._views[''][i];
+					}
+					else if (cv.views._views[''][i].className === 'wp-slider') {
+						sv = cv.views._views[''][i];
+					}
+				}
+				if (mv) {
+					mv.remove();
+				}
+				if (sv) {
+					slider_model = sv.model;
+				}
+
 				var torview = new TOR.View({
-					model: wp.revisions.Diff.revisions
+					model: cv.model
 				});
-				wp.revisions.Diff.revisionView.undelegateEvents();
-				wp.revisions.Diff.revisionView = torview;
+				cv.views.add(torview);
 				torview.render();
 			}
 			else {

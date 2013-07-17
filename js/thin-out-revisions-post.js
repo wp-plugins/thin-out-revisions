@@ -1,10 +1,9 @@
 (function ($, window, document, undefined) {
 	$(document).ready(function () {
 		$('.post-revisions a').each(function () {
-			var parse_url = /(post|revision)=([0-9]+)&action=edit/;
+			var parse_url = /(post|revision)=([0-9]+)/;
 			var result = parse_url.exec($(this).attr('href'));
 			if (result && result[2] != hm_tor_params.latest_revision) {
-				//$(this).parent().append(' <a href="#" class="tor-rm" id="tor-rm-' + result[2] + '" style="margin: 0 10px">Remove this revision</a>');
 				$(this).parent().append('<input id="tor-rm-' + result[2] + '" class="button button-primary tor-rm" type="submit" value="Delete" style="margin: 0 10px"/>');
 			}
 		}); // '.post-revisions a' each
@@ -31,7 +30,6 @@
 			})
 					.success(function (response) {
 				$(btn).parent().css('text-decoration', 'line-through');
-				/* alert(hm_tor_params.msg_remove_completed); */
 				$(btn).attr('disabled', 'disabled');
 				$(btn).attr('value', 'Deleted');
 			})
