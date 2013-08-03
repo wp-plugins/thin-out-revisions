@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually.
-Version: 1.3.3
+Version: 1.3.4
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.3.3';
+	const VERSION        = '1.3.4';
 	const OPTION_VERSION = '1.1';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -503,18 +503,7 @@ class HM_TOR_RevisionMemo_Loader {
 			return;
 		}
 
-		$latest_revision = 0;
-		$revisions = wp_get_post_revisions( $post->ID );
-
-		if ( ! empty( $revisions ) ) {
-			// grab the last revision, but not an autosave (from wp_save_post_revision in WP 3.6)
-			foreach ( $revisions as $revision ) {
-				if ( false !== strpos( $revision->post_name, "{$revision->post_parent}-revision" ) ) {
-					$latest_revision = $revision->ID;
-					break;
-				}
-			}
-		}
+		$latest_revision = $this->get_latest_revision( $post->ID );
 
 		if ( ! $postmemo && $latest_revision != 0 ) {
 			$postmemo = get_post_meta( $latest_revision, "_hm_tor_memo", true );
@@ -562,6 +551,25 @@ class HM_TOR_RevisionMemo_Loader {
 		</script>
 	<?php
 	} // end of 'admin_head'
+
+	// This function should be overrided for 3.5
+	function get_latest_revision( $post_id ) {
+
+		// COPY FROM CORE
+		$latest_revision = 0;
+		$revisions = wp_get_post_revisions( $post_id );
+
+		if ( ! empty( $revisions ) ) {
+			// grab the last revision, but not an autosave (from wp_save_post_revision in WP 3.6)
+			foreach ( $revisions as $revision ) {
+				if ( false !== strpos( $revision->post_name, "{$revision->post_parent}-revision" ) ) {
+					$latest_revision = $revision->ID;
+					break;
+				}
+			}
+		}
+	  return $latest_revision;
+	}
 
 	function add_meta_box() {
 		global $post;
@@ -669,6 +677,9 @@ class HM_TOR_RevisionMemo_Loader_3_5 extends HM_TOR_RevisionMemo_Loader {
 		}
 	}
 
+	function get_latest_revision( $post_id ) {
+		return 0; // to indicate the version is 3.5
+	}
 }
 
 $hm_tor_plugin_loader = null;
