@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
 Tested up to: 3.6
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,7 +96,7 @@ So some options became needless.
 
 == Changelog ==
 
-= 1.3.4 - Aug 3, 2013 =
+= 1.3.5 - Aug 3, 2013 =
 * [Fixed] Broken behavior in WP 3.5. Sorry for frequent update.
 
 = 1.3.3 - Aug 3, 2013 =
@@ -141,7 +141,7 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.3.4 =
+= 1.3.5 =
 [Fixed] Broken behavior in WP 3.5.
 
 = 1.3.3 =
