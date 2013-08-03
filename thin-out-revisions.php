@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually.
-Version: 1.3.1
+Version: 1.3.2
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.3.1';
+	const VERSION        = '1.3.2';
 	const OPTION_VERSION = '1.1';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -535,8 +535,11 @@ class HM_TOR_RevisionMemo_Loader {
 	} // end of 'admin_head'
 
 	function add_meta_box() {
-		add_meta_box( 'hm-he-memo', __( 'Revision Memo', self::I18N_DOMAIN ), array( &$this, 'hm_tor_mbfunction' ), 'post', 'normal', 'core' );
-		add_meta_box( 'hm-he-memo', __( 'Revision Memo', self::I18N_DOMAIN ), array( &$this, 'hm_tor_mbfunction' ), 'page', 'normal', 'core' );
+		global $post;
+		if ( $post && post_type_supports( $post->post_type, 'revisions' ) ) {
+			// add_meta_box( 'hm-he-revision', __('Revisions'), 'post_revisions_meta_box', null, 'normal', 'core' );
+			add_meta_box( 'hm-he-memo', __( 'Revision Memo', self::I18N_DOMAIN ), array( &$this, 'hm_tor_mbfunction' ), null, 'normal', 'core' );
+	  }
 	}
 
 	function hm_tor_mbfunction( $post ) {

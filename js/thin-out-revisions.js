@@ -3,18 +3,18 @@
 	$(document).ready(function () {
 
 		setTimeout(function () {
-			if (wp && wp.revisions && wp.revisions.view && wp.revisions.view.Meta &&
-					wp.revisions.view.Controls) {
+			if (wp && wp.revisions && wp.revisions.view && wp.revisions.view.Metabox &&
+					wp.revisions.view.Controls && wp.revisions.view.frame.model && wp.revisions.view.frame.model.get('from')) {
 				var slider_model = 0;
 				TOR = {
-					View: wp.revisions.view.Meta.extend({
+					View: wp.revisions.view.Metabox.extend({
 						events: {},
 
 						initialize: function () {
-							wp.revisions.view.Meta.prototype.initialize.apply(this);
+							wp.revisions.view.Metabox.prototype.initialize.apply(this);
 							_.bindAll(this, 'render');
 							this.events = _.extend({'click #tor-thin-out': 'thinOut'},
-									wp.revisions.view.Meta.prototype.events);
+									wp.revisions.view.Metabox.prototype.events);
 							this.listenTo(this.model, 'change:compareTwoMode', this.render);
 
 							if (slider_model) {
@@ -24,23 +24,27 @@
 
 						render: function () {
 
-							wp.revisions.view.Meta.prototype.render.apply(this);
+							wp.revisions.view.Metabox.prototype.render.apply(this);
 
 							if (this.model.get('compareTwoMode')) {
-								var s = this.$el.html().replace(/<\/div>\s*$/i, '');
-
-								this.$el.html(s + '<div id="tor-div" class="diff-header"><div class="diff-title"><strong>&nbsp;</strong><span id="tor-msg" style="margin: 0 10px;">'
-								+ hm_tor_params.msg_thin_out + '</span><input id="tor-thin-out" class="button button-primary" type="submit" value="Thin Out" /></div></div></div>');
+								this.$el.html(this.$el.html() + '<div id="tor-div" class="diff-header"><div class="diff-title"><strong>&nbsp;</strong><span id="tor-msg" style="margin: 0 10px;">'
+								+ hm_tor_params.msg_thin_out + '</span><input id="tor-thin-out" class="button button-primary" type="submit" value="Thin Out" /></div></div>');
 
 							}
 
 							var fromid = this.model.get('from').get('id');
 							var toid = this.model.get('to').get('id');
 							if (typeof(memos) !== 'undefined' && memos[fromid]) {
-								$('#diff-title-from').append('[' + memos[fromid] + ']');
+								var $f = $('.diff-meta-from .diff-title');
+								if (! /\[/.test($f.text())) { // avoid duplicated memos
+									$f.append('[' + memos[fromid] + ']');
+								}
 							}
 							if (typeof(memos) !== 'undefined' && memos[toid]) {
-								$('#diff-title-to').append('[' + memos[toid] + ']');
+								var $t = 	$('.diff-meta-to .diff-title');
+								if (! /\[/.test($t.text())) {
+									$t.append('[' + memos[toid] + ']');
+								}
 							}
 							return this;
 						},
@@ -110,7 +114,7 @@
 				}
 
 				var torview = new TOR.View({
-					model: cv.model
+					model: wp.revisions.view.frame.model
 				});
 				cv.views.add(torview);
 				torview.render();
