@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually.
-Version: 1.3.2
+Version: 1.3.3
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.3.2';
+	const VERSION        = '1.3.3';
 	const OPTION_VERSION = '1.1';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -62,6 +62,8 @@ class HM_TOR_Plugin_Loader {
 
 		if ( $post && $post->ID ) {
 			$revisions = wp_get_post_revisions( $post->ID );
+
+			// COPY FROM CORE
 			if ( ! empty( $revisions ) ) {
 				// grab the last revision, but not an autosave (from wp_save_post_revision in WP 3.6)
 				foreach ( $revisions as $revision ) {
@@ -480,6 +482,9 @@ class HM_TOR_RevisionMemo_Loader {
 		else {
 			return;
 		}
+		if ( !$post || !$post->ID ) {
+			return;
+		}
 
 		$memos = $wpdb->get_results(
 			"
@@ -498,12 +503,36 @@ class HM_TOR_RevisionMemo_Loader {
 			return;
 		}
 
+		$latest_revision = 0;
+		$revisions = wp_get_post_revisions( $post->ID );
+
+		if ( ! empty( $revisions ) ) {
+			// grab the last revision, but not an autosave (from wp_save_post_revision in WP 3.6)
+			foreach ( $revisions as $revision ) {
+				if ( false !== strpos( $revision->post_name, "{$revision->post_parent}-revision" ) ) {
+					$latest_revision = $revision->ID;
+					break;
+				}
+			}
+		}
+
+		if ( ! $postmemo && $latest_revision != 0 ) {
+			$postmemo = get_post_meta( $latest_revision, "_hm_tor_memo", true );
+		}
+
 		?>
 		<script type='text/javascript'>
 			var memos = {
 				<?php
+				    $has_latest = false;
 						foreach ($memos as $m) {
+						  if ($m->post_id == $latest_revision) {
+						    $has_latest = true;
+						  }
 							echo "'$m->post_id': '" . esc_js($m->meta_value) . "',\n";
+						}
+						if ( (! $has_latest ) && $latest_revision != 0 ) {
+						  echo "'$latest_revision': '" . esc_js($postmemo) . "',\n";
 						}
 						echo "'$post->ID': '" . esc_js($postmemo) . "'\n";
 				?>
@@ -557,29 +586,35 @@ class HM_TOR_RevisionMemo_Loader {
 		global $wpdb;
 
 		if ( isset( $_POST['hm_tor_nonce'] ) && wp_verify_nonce( $_POST['hm_tor_nonce'], plugin_basename( __FILE__ ) ) &&
-				isset( $_POST['hm_tor_memo'] ) && $_POST['hm_tor_memo'] !== '' &&
+				isset( $_POST['hm_tor_memo'] ) &&
 				( ( $_POST['post_type'] == 'post' && current_user_can( 'edit_post', $post_id ) )
 						|| ( $_POST['post_type'] == 'page' && current_user_can( 'edit_page', $post_id ) ) )
 		) {
-			if ( $parent = wp_is_post_revision( $post_id ) ) { // saving a revision
+			if ( $parent = wp_is_post_revision( $post_id ) ) {
+				// saving a revision
 
-				$revisions = wp_get_post_revisions( $parent );
-				if ( count( $revisions ) <= 1 ) { // making the first revision
-					// If the parent has a memo (made in pre 3.6 ver.), attach it to the revision.
-					$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->postmeta SET post_id = '%s'  WHERE post_id = '%s' AND meta_key = '_hm_tor_memo' ", $post_id, $parent ) );
+				if ( $_POST['hm_tor_memo'] !== '' ) {
+					// We cannot use update_post_meta for revisions because it will add metadata to the parent.
+					update_metadata( 'post', $post_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
 				}
-				else {
-					// In WP3.6, we don't need a memo for the post bacause it has a copy revision.
-					$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE post_id = '%s' AND meta_key = '_hm_tor_memo' ", $parent) );
-				}
-				// We cannot use update_post_meta for revisions because it will add metadata to the parent.
-				update_metadata( 'post', $post_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
 			}
-			else { // saving a post
+			else {
+				// saving a post
 
-				if ( $this->no_new_revision ) {
-					// Attach the new memo to the latest revision
-					update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
+				if ($this->last_revision_id != 0) {
+
+					// for compatibility for WP3.5 and older.
+					$postmemo = get_post_meta( $post_id, '_hm_tor_memo', true);
+					if ( $postmemo ){
+						update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', $postmemo );
+						delete_post_meta( $post_id, '_hm_tor_memo' );
+					}
+
+					// If we have a new memo value, update the memo even no new revision is created.
+					if ( $this->no_new_revision && $_POST['hm_tor_memo'] !== '' ) {
+						// Attach the new memo to the latest revision
+						update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
+					}
 				}
 			}
 		} // if ( isset ...
@@ -589,6 +624,8 @@ class HM_TOR_RevisionMemo_Loader {
 		// code from revision.php
 		$post_has_changed = false;
 
+		// COPY FROM CORE
+		// from wp_save_post_revision
 		foreach ( array_keys( _wp_post_revision_fields() ) as $field ) {
 			if ( normalize_whitespace( $post->$field ) != normalize_whitespace( $last_revision->$field ) ) {
 				$post_has_changed = true;
