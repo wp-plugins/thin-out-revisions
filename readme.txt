@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
 Tested up to: 3.6
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,9 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.3.6 - Sep 2, 2013 =
+* [Fixed] Improper operation of the 'Delete revisions on initial publication' feature in WP 3.6.
+
 = 1.3.5 - Aug 3, 2013 =
 * [Fixed] Broken behavior in WP 3.5. Sorry for frequent update.
 
@@ -141,13 +144,8 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.3.5 =
-[Fixed] Broken behavior in WP 3.5.
+= 1.3.6 - Sep 2, 2013 =
+[Fixed] Improper operation of the 'Delete revisions on initial publication' feature in WP 3.6.
 
-= 1.3.3 =
-Adjusting Revision Memo behavior for better handling in posts published prior to 3.6
-
-= 1.3.2 =
-Following latest changes in WP 3.6. WP 3.6 users have to upgrade to this version. Also WP 3.5 users can use this version.
 
 
