@@ -138,6 +138,9 @@ class HM_TOR_Plugin_Loader {
 		die();
 	}
 
+	function has_copy_revision() {
+		return true;
+	}
 
 	function post_updated( $post_id, $post, $post_before ) {
 		// delete_revisions_on_1st_publishment
@@ -148,12 +151,26 @@ class HM_TOR_Plugin_Loader {
 
 			// do nothing if previous status is other than 'draft'
 			if ( $post_before->post_status == 'draft' ) {
+
 				$revisions = wp_get_post_revisions( $post_id );
-				foreach ( $revisions as $rev ) {
-					if ( false === strpos( $rev->post_name, 'autosave' ) ) {
-						wp_delete_post_revision( $rev->ID );
+
+				// don't remove the latest.
+				$latest = $this->has_copy_revision();
+
+				if ( ! empty( $revisions ) ) {
+
+					foreach ( $revisions as $rev ) {
+						if ( false !== strpos( $rev->post_name, "{$rev->post_parent}-revision" ) ) {
+							if ($latest) {
+								$latest = false;
+							}
+							else {
+								wp_delete_post_revision( $rev->ID );
+							}
+						}
 					}
 				}
+
 			}
 		}
 
@@ -229,9 +246,9 @@ class HM_TOR_Plugin_Loader {
 	function validate_options( $input ) {
 		$valid = array();
 
-		$valid['quick_edit']     = ( ( $input['quick_edit'] && $input['quick_edit'] == "on" ) ? "on" : "off" );
-		$valid['bulk_edit']      = ( ( $input['bulk_edit'] && $input['bulk_edit'] == "on" ) ? "on" : "off" );
-		$valid['del_on_publish'] = ( $input['del_on_publish'] == "on" ? "on" : "off" );
+		$valid['quick_edit']     = ( ( isset($input['quick_edit']) && $input['quick_edit'] == "on" ) ? "on" : "off" );
+		$valid['bulk_edit']      = ( ( isset($input['bulk_edit']) && $input['bulk_edit'] == "on" ) ? "on" : "off" );
+		$valid['del_on_publish'] = ( ( isset($input['del_on_publish']) && $input['del_on_publish'] == "on" ) ? "on" : "off" );
 
 		return $valid;
 	}
@@ -270,6 +287,10 @@ class HM_TOR_Plugin_Loader_3_5 extends HM_TOR_Plugin_Loader {
 		remove_action( 'pre_post_update', 'wp_save_post_revision' );
 		add_action( 'pre_post_update', array( &$this, 'pre_post_update' ) );
 		add_action( 'admin_head',       array( &$this, 'admin_head' ), 20 );
+	}
+
+	function has_copy_revision() {
+		return false;
 	}
 
 	function admin_enqueue_scripts() {
