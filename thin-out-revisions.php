@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually.
-Version: 1.3.6
+Version: 1.4
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,8 +11,8 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.3.6';
-	const OPTION_VERSION = '1.1';
+	const VERSION        = '1.4';
+	const OPTION_VERSION = '1.4';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
 	const PREFIX         = 'hm_tor_';
@@ -20,13 +20,17 @@ class HM_TOR_Plugin_Loader {
 	public $page = ''; // 'revision.php' or 'post.php'
 
 	function __construct() {
-		register_activation_hook( __FILE__, array( &$this, 'hm_tor_install' ) );
+		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
+		register_deactivation_hook( __FILE__, array( &$this, 'plugin_deactivation' ) );
 		add_action( 'init',                   array( &$this, 'init' ) );
 		add_action( 'plugins_loaded',         array( &$this, 'plugins_loaded' ) );
 		add_action( 'admin_enqueue_scripts',  array( &$this, 'admin_enqueue_scripts' ), 20 );
 		add_action( 'wp_ajax_hm_tor_do_ajax', array( &$this, 'hm_tor_do_ajax' ) );
+		add_action( 'wp_ajax_hm_tor_do_ajax_start_delete_old_revisions', array( &$this, 'do_ajax_start_delete_old_revisions' ) );
 		add_action( 'post_updated',           array( &$this, 'post_updated' ), 20, 3 );
 		add_action( 'transition_post_status', array( &$this, 'transition_post_status' ), 10, 3 );
+
+		add_action( 'hm_tor_cron_hook', array( &$this, 'cron_hook' ) );
 
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
@@ -48,9 +52,24 @@ class HM_TOR_Plugin_Loader {
 		load_plugin_textdomain( self::I18N_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
 
-	function hm_tor_install() {
+	public static function plugin_activation( $network_wide ) {
 		if ( version_compare( get_bloginfo( 'version' ), '3.2', '<' ) ) {
 			deactivate_plugins( basename( __FILE__ ) ); // Deactivate this plugin
+			return;
+		}
+
+		$option = self::get_hm_tor_option();
+		if ( $option['schedule_enabled'] == 'enabled' && preg_match( '/^([0-9]{1,2}):([0-9]{2})$/', $option['del_at'], $matches )
+				&& filter_var( $option['del_older_than'], FILTER_VALIDATE_INT ) !== FALSE ) {
+			wp_schedule_event( self::get_timestamp_for_cron( $matches[1], $matches[2] ), 'daily', 'hm_tor_cron_hook', array( intval( $option['del_older_than'] ) ) );
+		}
+	}
+
+	public static function plugin_deactivation() {
+		$prev =self::get_hm_tor_option();
+		$timestamp = wp_next_scheduled( 'hm_tor_cron_hook',  array( intval( $prev['del_older_than'] ) ) );
+		if ( $timestamp !== false ) {
+			wp_unschedule_event( $timestamp, 'hm_tor_cron_hook', array( intval( $prev['del_older_than'] ) ) );
 		}
 	}
 
@@ -195,6 +214,9 @@ class HM_TOR_Plugin_Loader {
 		add_settings_field( 'hm_tor_del_on_publish', __( 'Delete all revisions on initial publication', self::I18N_DOMAIN ),
 			array( &$this, 'settings_field_del_on_publish' ), 'hm_tor_option_page', 'hm_tor_main' );
 
+		add_settings_field( 'hm_tor_delete_old_revisions', __( 'Delete revisions as old as or older than', self::I18N_DOMAIN ),
+		  array( &$this, 'settings_field_delete_old_revisions' ), 'hm_tor_option_page', 'hm_tor_main' );
+
 		register_setting( 'hm_tor_option_group', 'hm_tor_options', array( &$this, 'validate_options' ) );
 	}
 
@@ -210,16 +232,19 @@ class HM_TOR_Plugin_Loader {
 		}
 	}
 
-	function get_hm_tor_option( $key = NULL ) {
+	public static function get_hm_tor_option( $key = NULL ) {
 		$default_hm_tor_option = array(
 			'version'        => self::OPTION_VERSION,
 			'quick_edit'     => "off", // deprecated
 			'bulk_edit'      => "off", // deprecated
 			'del_on_publish' => "off",
+			'del_older_than' => "90",
+			'schedule_enabled' => 'off',
+			'del_at'         => "3:00",
 		);
 
 		// The get_option doesn't seem to merge retrieved values and default values.
-		$options = get_option( 'hm_tor_options', $default_hm_tor_option );
+		$options = array_merge( $default_hm_tor_option, (array) get_option( 'hm_tor_options', array() ) );
 		return $key ? $options[$key] : $options;
 	}
 
@@ -243,8 +268,85 @@ class HM_TOR_Plugin_Loader {
 		$this->settings_field( 'del_on_publish', __( 'Delete all revisions on initial publication', self::I18N_DOMAIN ) );
 	}
 
+	function settings_field_delete_old_revisions() {
+
+		echo "<p><input class='small-text' id='hm_tor_del_older_than' name='hm_tor_options[del_older_than]' type='text' value='" . esc_attr( $this->get_hm_tor_option( 'del_older_than' ) ) . "' /> " . __( 'days', self::I18N_DOMAIN )  . "\n";
+
+		echo '<input id="hm_tor_rm_now_button" class="button button-primary" style="margin: 0 10px 0 50px;" type="submit" value="' . __( 'Remove NOW', self::I18N_DOMAIN )  . '" /><span id="hm_tor_rm_now_msg"></span></p>';
+
+		echo '<fieldset><legend class="screen-reader-text"><span>' . __('Run as scheduled task', self::I18N_DOMAIN) . '</span></legend>' .
+	        '<label for="hm_tor_schedule_enabled"><input name="hm_tor_options[schedule_enabled]" type="checkbox" id="hm_tor_schedule_enabled" value="enabled" ' .
+				  checked( $this->get_hm_tor_option('schedule_enabled'), 'enabled', false ) . '/> ' .
+	        __('Run as daily task. Run every day at', self::I18N_DOMAIN) . "</label>\n";
+
+		echo  " <input class='small-text' id='hm_tor_del_at' name='hm_tor_options[del_at]' type='text' value='" . esc_attr( $this->get_hm_tor_option( 'del_at' ) ) . "' />";
+
+		// for debug
+		if ( $this->get_hm_tor_option( 'schedule_enabled' ) == 'enabled' ) {
+			$next = wp_next_scheduled("hm_tor_cron_hook", array( intval( $this->get_hm_tor_option( 'del_older_than' ) ) ) );
+			$t = time();
+			$diff = intval(($next - $t) / 60);
+			$msg = sprintf( __( "The task will begin after %d min.", self::I18N_DOMAIN ), $diff );
+			echo "<div>" .  $msg . " (gmt_offset = " . get_option( 'gmt_offset' ) . ")</div>";
+
+		}
+	}
+
+	public static function get_timestamp_for_cron( $hour, $min ) {
+		$now = time();
+		$t = ceil( $now / 86400 ) * 86400 + ($hour - get_option( 'gmt_offset') )  * 3600 + $min * 60;
+
+		while ( $now < $t - 86400) {
+			$t -= 86400;
+		}
+
+		while ( $now > $t ) {
+			$t += 86400;
+		}
+		return $t;
+	}
+
+
+
 	function validate_options( $input ) {
 		$valid = array();
+		$prev  = $this->get_hm_tor_option();
+		$valid_conf_for_cron = true;
+
+		// reset schedule
+		$timestamp = wp_next_scheduled( 'hm_tor_cron_hook',  array( intval( $prev['del_older_than'] ) ) );
+		if ( $timestamp !== false ) {
+			wp_unschedule_event( $timestamp, 'hm_tor_cron_hook', array( intval( $prev['del_older_than'] ) ) );
+		}
+
+		if ( filter_var( $input['del_older_than'], FILTER_VALIDATE_INT ) === FALSE ) {
+			add_settings_error( 'hm_tor_delete_old_revisions', 'hm-tor-del-older-than-error', __( 'The day has to be an integer.', self::I18N_DOMAIN ) );
+			$valid['del_older_than'] = $prev['del_older_than'];
+			$valid_conf_for_cron = false;
+		}
+		else {
+			$valid['del_older_than'] = $input['del_older_than'];
+		}
+
+		$valid['schedule_enabled'] = 'disabled';
+		$valid['del_at'] = $prev['del_at'];
+		if ( isset($input['schedule_enabled']) && $input['schedule_enabled'] == 'enabled' ) {
+			$hour = $min = 0;
+			if ( ! preg_match( '/^([0-9]{1,2}):([0-9]{2})$/', $input['del_at'], $matches ) ) {
+				add_settings_error( 'hm_tor_delete_old_revisions', 'hm-tor-del-at-error', __( 'Wrong time format.', self::I18N_DOMAIN ) );
+				$valid_conf_for_cron = false;
+			}
+			else {
+				$valid['del_at'] = $input['del_at'];
+				$hour = $matches[1];
+				$min  = $matches[2];
+			}
+
+			if ( $valid_conf_for_cron  ) {
+				$valid['schedule_enabled'] = 'enabled';
+				wp_schedule_event( self::get_timestamp_for_cron( $hour, $min ), 'daily', 'hm_tor_cron_hook', array( intval( $valid['del_older_than'] ) ) );
+			}
+		}
 
 		$valid['quick_edit']     = ( ( isset($input['quick_edit']) && $input['quick_edit'] == "on" ) ? "on" : "off" );
 		$valid['bulk_edit']      = ( ( isset($input['bulk_edit']) && $input['bulk_edit'] == "on" ) ? "on" : "off" );
@@ -260,6 +362,44 @@ class HM_TOR_Plugin_Loader {
 
 	function admin_page() {
 		?>
+		<script type="text/javascript">
+			(function($, window, document) {
+
+				$(document).ready(function() {
+
+					$('#hm_tor_rm_now_button').click(function() {
+						if (! /^[0-9]+$/.test( $('#hm_tor_del_older_than').val())) {
+							alert('<?php echo __( 'The day has to be an integer.', self::I18N_DOMAIN ); ?>');
+							return false;
+						}
+						if (!confirm('<?php echo __( "You really remove?", self::I18N_DOMAIN ); ?>' + ' (' + $('#hm_tor_del_older_than').val() + ' ' +
+						              '<?php echo __( 'days', self::I18N_DOMAIN ); ?>' + ')')) {
+							return false;
+						}
+						$('#hm_tor_rm_now_msg').html('<?php echo __( 'Processing ...', self::I18N_DOMAIN ); ?>');
+						$.ajax({
+							url: '<?php echo admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' ); ?>',
+							dataType: 'json',
+							data: {
+								action: 'hm_tor_do_ajax_start_delete_old_revisions',
+								days: $('#hm_tor_del_older_than').val(),
+								security: '<?php echo wp_create_nonce( self::PREFIX . "nonce" ); ?>'
+							}
+						})
+						.success (function(response) {
+							$('#hm_tor_rm_now_msg').html(response.msg);
+						})
+						.error (function() {
+							$('#hm_tor_rm_now_msg').html('<?php  __( 'Error in communication with server', self::I18N_DOMAIN ); ?>');
+						});
+
+						return false;
+					});
+
+				});
+			})(jQuery, window, document);
+		</script>
+
 		<div class="wrap">
 			<?php screen_icon(); ?>
 			<h2>Thin Out Revisions</h2>
@@ -272,6 +412,57 @@ class HM_TOR_Plugin_Loader {
 			</form>
 		</div>
 	<?php
+	}
+
+	function delete_old_revisions( $days ) {
+		global $wpdb;
+
+		$revisions = $wpdb->get_results($wpdb->prepare(
+			"SELECT ID, post_parent, post_name
+      FROM $wpdb->posts
+      WHERE post_type = 'revision'
+			AND DATE_SUB(CURDATE(), INTERVAL %d DAY) >= post_date
+			ORDER BY post_parent, post_date DESC", ( $days - 1 )
+		) ); // Both CURDATE and post_date are local time.
+
+		// COPY FROM
+		// refer wp_save_post_revision
+		$parent = 0;
+		foreach ( $revisions as $revision ) {
+			if ( $this->has_copy_revision() && $parent != $revision->post_parent &&
+					false !== strpos( $revision->post_name, "{$revision->post_parent}-revision" ) ) {
+				// avoid autosave
+
+				$parent = $revision->post_parent;
+			}
+			else {
+				// delete revisions
+				wp_delete_post_revision( $revision->ID );
+			}
+		}
+
+	} // end of bulk_delete
+
+	function do_ajax_start_delete_old_revisions() {
+		if ( check_ajax_referer( self::PREFIX . "nonce", 'security', false ) ) {
+
+			wp_schedule_single_event( time(), 'hm_tor_cron_hook', array( intval($_REQUEST['days'] ) ) );
+			echo json_encode( array(
+				"result" => "success",
+				"msg"    => __( "The task is successfully started.", self::I18N_DOMAIN )
+			) );
+		}
+		else {
+			echo json_encode( array(
+				"result" => "error",
+				"msg"    => __( "Wrong session. Unable to process.", self::I18N_DOMAIN )
+			) );
+		}
+		die();
+	}
+
+	function cron_hook( $days ) {
+		$this->delete_old_revisions( $days );
 	}
 
 } // end of class HM_TOR_Plugin_Loader

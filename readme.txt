@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
-Tested up to: 3.6
-Stable tag: 1.3.6
+Tested up to: 3.7
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,10 @@ TOR can clean them.
 Just simply enable the following option in the 'Settings' - 'Thin Out Revisions' admin page (fig. 3).
 
 * Delete revisions on initial publication
+
+= Bulk erase of old revisions =
+
+From TOR 1.4, you can remove old revisions on the fly or daily as a scheduled task.
 
 = Revision Memo =
 
@@ -96,6 +100,9 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.4 - Nov 6, 2013 =
+* New feature to delete old revisions as old as or older than assigned days. You can do it on the fly or daily as a scheduled task.
+
 = 1.3.6 - Sep 2, 2013 =
 * [Fixed] Improper operation of the 'Delete revisions on initial publication' feature in WP 3.6.
 
@@ -144,8 +151,9 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.3.6 - Sep 2, 2013 =
-[Fixed] Improper operation of the 'Delete revisions on initial publication' feature in WP 3.6.
+= 1.4 - Nov 6, 2013 =
+* New feature to delete old revisions as old as or older than assigned days. You can do it on the fly or daily as a scheduled task.
+
 
 
 
