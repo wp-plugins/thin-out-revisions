@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
-Tested up to: 3.7
-Stable tag: 1.4
+Tested up to: 3.8
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,7 @@ It will encourage the author a lot.
 Related Links:
 
 * [Plugin Homepage](http://en.hetarena.com/thin-out-revisions "Plugin Homepage")
+* [Japanese Homepage](http://hetarena.com/thin-out-revisions "Japanese Homepage")
 
 == Installation ==
 
@@ -61,7 +62,6 @@ You can install Thin Out Revisions in a standard manner.
 1. Go to Plugins - Add New page of your WordPress and install Thin Out Revisions plugin.
 1. Or unzip `thin-out-revisions.*.zip` to your `/wp-content/plugins/` directory. The asterisk is a version number.
 
-Thin Out Revisions comes with no setting options.
 Don't forget to activate the plugin before use it.
 
 == Frequently Asked Questions ==
@@ -71,6 +71,12 @@ Don't forget to activate the plugin before use it.
 From WordPress 3.6, proper posts have a copy revision of the current post.
 Without a copy revision, updating a post results in loss of current content.
 So when TOR find a post without copy revision, it will warn you to create a copy.
+
+= I pressed the 'Remove NOW' button. But it seemed it's not working. =
+
+This plugin is using [wp_cron](http://codex.wordpress.org/Function_Reference/wp_cron) even if you press the 'Remove NOW' button. When you press it, the plugin just schedule a task to delete revisions as an immediate wp_cron task. And it will take a while until the task is completed.
+
+So please wait a while after you press the button.
 
 = Where is revision.php? =
 You can go to revision.php by choosing a revision on 'Edit Post' or 'Edit Page' screen.
@@ -99,6 +105,12 @@ So some options became needless.
 
 
 == Changelog ==
+
+= 1.5 - Dec 17, 2013 =
+* [NOTICE] This release (1.5.x) will be the last version to support WordPress 3.5 and prior.
+* A new feature to thin out including the 'From' revision.
+* French resource included. Thanks to [mister klucha](http://wordpress.org/support/profile/mister-klucha). But some translations especially for the new feature are made by the author using auto translator. Don't blame him and tell the author improved translation.
+* WordPress 3.8 compatible.
 
 = 1.4 - Nov 6, 2013 =
 * New feature to delete old revisions as old as or older than assigned days. You can do it on the fly or daily as a scheduled task.
@@ -151,9 +163,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.4 - Nov 6, 2013 =
-* New feature to delete old revisions as old as or older than assigned days. You can do it on the fly or daily as a scheduled task.
-
-
-
-
+= 1.5 =
+This version introduces a new feature to thin out including the 'From' revision. And it is adjusted for new admin screens in WordPress 3.8.

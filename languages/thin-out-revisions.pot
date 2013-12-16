@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Thin Out Revisions package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Thin Out Revisions 1.4\n"
+"Project-Id-Version: Thin Out Revisions 1.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
-"POT-Creation-Date: 2013-11-05 14:46:38+00:00\n"
+"POT-Creation-Date: 2013-12-15 22:49:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,158 +12,163 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: thin-out-revisions.php:87 thin-out-revisions.php:356
-#: thin-out-revisions.php:571
-msgid "You really remove?"
+#: thin-out-revisions.php:108 thin-out-revisions.php:401
+#: thin-out-revisions.php:613
+msgid "Do you really want to remove this?"
 msgstr ""
 
-#: thin-out-revisions.php:88
+#: thin-out-revisions.php:109
 msgid "The revision(s) removed."
 msgstr ""
 
-#: thin-out-revisions.php:89 thin-out-revisions.php:373
-#: thin-out-revisions.php:575
+#: thin-out-revisions.php:110 thin-out-revisions.php:419
+#: thin-out-revisions.php:617
 msgid "Error in communication with server"
 msgstr ""
 
-#: thin-out-revisions.php:90
+#: thin-out-revisions.php:111
 msgid "Nothing to remove."
 msgstr ""
 
-#: thin-out-revisions.php:91
+#: thin-out-revisions.php:112
 msgid "Remove revisions between two revisions above"
 msgstr ""
 
-#: thin-out-revisions.php:130
+#: thin-out-revisions.php:113 thin-out-revisions.php:405
+#: thin-out-revisions.php:614
+msgid "Processing..."
+msgstr ""
+
+#: thin-out-revisions.php:114
+msgid "Include the 'From' revision"
+msgstr ""
+
+#: thin-out-revisions.php:153
 msgid "%s revision removed."
 msgid_plural "%s revisions removed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: thin-out-revisions.php:137 thin-out-revisions.php:441
+#: thin-out-revisions.php:160 thin-out-revisions.php:484
 msgid "Wrong session. Unable to process."
 msgstr ""
 
-#: thin-out-revisions.php:198 thin-out-revisions.php:252
+#: thin-out-revisions.php:221 thin-out-revisions.php:293
 msgid "Delete all revisions on initial publication"
 msgstr ""
 
-#: thin-out-revisions.php:201
+#: thin-out-revisions.php:224
 msgid "Delete revisions as old as or older than"
 msgstr ""
 
-#: thin-out-revisions.php:212
+#: thin-out-revisions.php:253
 msgid ""
 "You should press update button without modification to make a copy revision. "
 "Or you will lose current content after update."
 msgstr ""
 
-#: thin-out-revisions.php:213
+#: thin-out-revisions.php:254
 msgid "http://wordpress.org/plugins/thin-out-revisions/faq/"
 msgstr ""
 
-#: thin-out-revisions.php:214
+#: thin-out-revisions.php:255
 msgid "See detail..."
 msgstr ""
 
-#: thin-out-revisions.php:257
+#: thin-out-revisions.php:298 thin-out-revisions.php:402
 msgid "days"
 msgstr ""
 
-#: thin-out-revisions.php:259
+#: thin-out-revisions.php:300
 msgid "Remove NOW"
 msgstr ""
 
-#: thin-out-revisions.php:261
+#: thin-out-revisions.php:302
 msgid "Run as scheduled task"
 msgstr ""
 
-#: thin-out-revisions.php:264
+#: thin-out-revisions.php:305
 msgid "Run as daily task. Run every day at"
 msgstr ""
 
-#: thin-out-revisions.php:273
+#: thin-out-revisions.php:314
 msgid "The task will begin after %d min."
 msgstr ""
 
-#: thin-out-revisions.php:291 thin-out-revisions.php:353
+#: thin-out-revisions.php:349 thin-out-revisions.php:398
 msgid "The day has to be an integer."
 msgstr ""
 
-#: thin-out-revisions.php:304
+#: thin-out-revisions.php:362
 msgid "Wrong time format."
 msgstr ""
 
-#: thin-out-revisions.php:359 thin-out-revisions.php:572
-msgid "Processing ..."
-msgstr ""
-
-#: thin-out-revisions.php:391
+#: thin-out-revisions.php:437
 msgid "Save Changes"
 msgstr ""
 
-#: thin-out-revisions.php:435
+#: thin-out-revisions.php:478
 msgid "The task is successfully started."
 msgstr ""
 
-#: thin-out-revisions.php:481 thin-out-revisions.php:502
+#: thin-out-revisions.php:523 thin-out-revisions.php:544
 msgid "Disable revisioning while quick editing"
 msgstr ""
 
-#: thin-out-revisions.php:483 thin-out-revisions.php:506
+#: thin-out-revisions.php:525 thin-out-revisions.php:548
 msgid "Disable revisioning while bulk editing"
 msgstr ""
 
-#: thin-out-revisions.php:553
+#: thin-out-revisions.php:595
 msgid "Remove a revision &quot;%s&quot;"
 msgstr ""
 
-#: thin-out-revisions.php:555
+#: thin-out-revisions.php:597
 msgid ""
 "Once you return to <a href=\"%s\">the edit page</a>, you could continue "
 "working with revisions. Or reselect existing revisions and press &quot;"
 "%s&quot; button."
 msgstr ""
 
-#: thin-out-revisions.php:555 thin-out-revisions.php:574
+#: thin-out-revisions.php:597 thin-out-revisions.php:616
 msgid "Compare Revisions"
 msgstr ""
 
-#: thin-out-revisions.php:563
+#: thin-out-revisions.php:605
 msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
 msgstr ""
 
-#: thin-out-revisions.php:566
+#: thin-out-revisions.php:608
 msgid "To update the compare-revision table, reload this page."
 msgstr ""
 
-#: thin-out-revisions.php:573
+#: thin-out-revisions.php:615
 msgid "Following revisions will be removed."
 msgstr ""
 
-#: thin-out-revisions.php:574
+#: thin-out-revisions.php:616
 msgid ""
 "To change revisions to remove, you have to press &quot;%s&quot; button after "
 "selection."
 msgstr ""
 
-#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.4)  #-#-#-#-#
+#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.5)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: thin-out-revisions.php:576
+#: thin-out-revisions.php:618
 msgid "Thin Out Revisions"
 msgstr ""
 
-#: thin-out-revisions.php:577
+#: thin-out-revisions.php:619
 msgid ""
 "You selected revisions after loading this page but revisions to remove were "
 "determined at the time of loading. Are you sure to proceed?"
 msgstr ""
 
-#: thin-out-revisions.php:773
+#: thin-out-revisions.php:815
 msgid "Revision Memo"
 msgstr ""
 
-#: thin-out-revisions.php:780
+#: thin-out-revisions.php:822
 msgid "Memo: "
 msgstr ""
 

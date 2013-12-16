@@ -1,189 +1,235 @@
-# English translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Hirokazu Matsui <blogger323@gmail.com>, 2012.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Thin Out Revisions v1.4\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
 "POT-Creation-Date: 2013-12-15 22:49:27+00:00\n"
-"PO-Revision-Date: 2012-09-29 16:16+0900\n"
-"Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
-"Language-Team: English\n"
-"Language: ja\n"
+"PO-Revision-Date: 2013-11-06 16:48:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes\n"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:108 thin-out-revisions.php:401
 #: thin-out-revisions.php:613
 msgid "Do you really want to remove this?"
-msgstr "本当に削除してよいですか？"
+msgstr "Vous voulez réellement supprimer ?"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:109
 msgid "The revision(s) removed."
-msgstr "リビジョンが削除されました。"
+msgstr "Les révisions ont été supprimées"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:110 thin-out-revisions.php:419
 #: thin-out-revisions.php:617
 msgid "Error in communication with server"
-msgstr "サーバーとの通信エラーが発生しました。"
+msgstr "Erreur dans la communication  avec le serveur"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:111
 msgid "Nothing to remove."
-msgstr "削除対象はありません"
+msgstr "Rien à supprimer"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:112
 msgid "Remove revisions between two revisions above"
-msgstr "中間リビジョンを削除する"
+msgstr "Supprimer les révisions parmi les deux ci-dessus"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:113 thin-out-revisions.php:405
 #: thin-out-revisions.php:614
 msgid "Processing..."
-msgstr "実行中．．．"
+msgstr "Traitement en cours..."
 
 #: thin-out-revisions.php:114
 msgid "Include the 'From' revision"
-msgstr "「旧リビジョン」も含めて削除する"
+msgstr "Inclure la 'Depuis' révision."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:153
 msgid "%s revision removed."
 msgid_plural "%s revisions removed."
-msgstr[0] "%s個のリビジョンが削除されました。"
-msgstr[1] "%s個のリビジョンが削除されました。"
+msgstr[0] "%s révision supprimée"
+msgstr[1] "%s révisions supprimées"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:160 thin-out-revisions.php:484
 msgid "Wrong session. Unable to process."
-msgstr "不正なセッションです。"
+msgstr "Mauvaise session. Impossible d'effectuer les tâches."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:221 thin-out-revisions.php:293
 msgid "Delete all revisions on initial publication"
-msgstr "初回公開時にそれまでのリビジョンを削除"
+msgstr "Supprimer toutes les révisions lors de la publication initiale"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:224
 msgid "Delete revisions as old as or older than"
-msgstr "次の日数を経過したリビジョンを削除する"
+msgstr "Supprimer les révisions vieilles de ou plus vieilles de"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:253
 msgid ""
 "You should press update button without modification to make a copy revision. "
 "Or you will lose current content after update."
 msgstr ""
-"コピーリビジョンが見つかりません。編集前に一度更新ボタンを押してコピーリビ"
-"ジョンを作成しておくことをお勧めします。"
+"Vous devez appuyer sur le bouton de mise à jour sans modification à faire "
+"une révision de la copie. Ou vous perdrez le contenu actuel après mise à "
+"jour."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:254
 msgid "http://wordpress.org/plugins/thin-out-revisions/faq/"
-msgstr "http://hetarena.com/archives/2231"
-
-#: thin-out-revisions.php:255
-msgid "See detail..."
-msgstr "詳細..."
-
-#: thin-out-revisions.php:298 thin-out-revisions.php:402
-msgid "days"
-msgstr "日"
-
-#: thin-out-revisions.php:300
-msgid "Remove NOW"
-msgstr "今すぐ削除"
-
-#: thin-out-revisions.php:302
-msgid "Run as scheduled task"
-msgstr "スケジュールして実行する"
-
-#: thin-out-revisions.php:305
-msgid "Run as daily task. Run every day at"
-msgstr "毎日実行する。開始時刻は"
-
-#: thin-out-revisions.php:314
-msgid "The task will begin after %d min."
-msgstr "あと %d 分で実行"
-
-#: thin-out-revisions.php:349 thin-out-revisions.php:398
-msgid "The day has to be an integer."
-msgstr "日数は整数で指定してください"
-
-#: thin-out-revisions.php:362
-msgid "Wrong time format."
-msgstr "時刻が不正です"
-
-#: thin-out-revisions.php:437
-msgid "Save Changes"
 msgstr ""
 
+# @ thin-out-revisions
+#: thin-out-revisions.php:255
+msgid "See detail..."
+msgstr "Voir les détails..."
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:298 thin-out-revisions.php:402
+msgid "days"
+msgstr "jours"
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:300
+msgid "Remove NOW"
+msgstr "Supprimer MAINTENANT"
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:302
+msgid "Run as scheduled task"
+msgstr "Planifier une tâche"
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:305
+msgid "Run as daily task. Run every day at"
+msgstr "Créer une tâche quotidienne. Lancer tous les jour à"
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:314
+msgid "The task will begin after %d min."
+msgstr "La tâche va débuter dans %d min."
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:349 thin-out-revisions.php:398
+msgid "The day has to be an integer."
+msgstr "Le jour doit être un nombre entier"
+
+# @ thin-out-revisions
+#: thin-out-revisions.php:362
+msgid "Wrong time format."
+msgstr "Mauvais format le d'heure"
+
+# @ default
+#: thin-out-revisions.php:437
+msgid "Save Changes"
+msgstr "Sauvegarder les changements"
+
+# @ thin-out-revisions
 #: thin-out-revisions.php:478
 msgid "The task is successfully started."
-msgstr "削除を開始しました"
+msgstr "La tâche a démarrée avec succès."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:523 thin-out-revisions.php:544
 msgid "Disable revisioning while quick editing"
-msgstr "クイック編集時はリビジョンを作成しない"
+msgstr "Désactiver les révisions lors de l'édition rapide"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:525 thin-out-revisions.php:548
 msgid "Disable revisioning while bulk editing"
-msgstr "一括編集時はリビジョンを作成しない"
+msgstr "Désactiver les révisions lors de l'édition en vrac"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:595
 msgid "Remove a revision &quot;%s&quot;"
-msgstr "リビジョン「%s」を消去"
+msgstr "Supprimer une révision &quot;%s&quot;"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:597
 msgid ""
 "Once you return to <a href=\"%s\">the edit page</a>, you could continue "
 "working with revisions. Or reselect existing revisions and press &quot;"
 "%s&quot; button."
 msgstr ""
-"リビジョン編集を続けるには一度<a href=\"%s\">編集ページ</a>にお戻りいただく"
-"か、残っているリビジョンを選択し直して「%s」ボタンを押してください。"
+"Une fois que vous revenez à <a href=\"%s\">la page d'édition</a>, vous "
+"pouvez continuer à travailler avec les révisions. Ou resélectionnez les "
+"révisions existantes et pressez la touche &quot;%s&quot."
 
+# @ default
 #: thin-out-revisions.php:597 thin-out-revisions.php:616
 msgid "Compare Revisions"
-msgstr ""
+msgstr "Comparer les révisions"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:605
 msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
-msgstr "「%s」と「%s」の間のリビジョンを消去"
+msgstr ""
+"Supprimer exclusivement les révisions entre &quot;%s&quot; et &quot;%s&quot;"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:608
 msgid "To update the compare-revision table, reload this page."
-msgstr "最新の情報を得るためにこのページをリロードしてください。"
+msgstr ""
+"Pour mettre à jour le tableau de comparaison de révisions, actualisez cette "
+"page."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:615
 msgid "Following revisions will be removed."
-msgstr "以下のリビジョンが消去されます。"
+msgstr "Les révisions suivantes vont être supprimées."
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:616
 msgid ""
 "To change revisions to remove, you have to press &quot;%s&quot; button after "
 "selection."
 msgstr ""
-"他のリビジョンを削除したい場合は比較するリビジョンを選び直し「%s」ボタンを押"
-"してください。"
+"Pour changer les révisions à supprimer, vous devez appuyer sur le bouton "
+"&quot;%s&quot; après la sélection."
 
+# @ thin-out-revisions
 #. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.5)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: thin-out-revisions.php:618
 msgid "Thin Out Revisions"
-msgstr "リビジョンの削除"
+msgstr ""
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:619
 msgid ""
 "You selected revisions after loading this page but revisions to remove were "
 "determined at the time of loading. Are you sure to proceed?"
 msgstr ""
-"ページがロードされた後にリビジョンを選択しても削除対象は変化しません。削除対"
-"象は意図した通りですか？"
+"Vous avez sélectionné les révisions après le chargement de cette page, mais "
+"des révisions à supprimer ont été déterminées au moment du chargement. Êtes-"
+"vous sûr de vouloir continuer ?"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:815
 msgid "Revision Memo"
-msgstr "リビジョンメモ"
+msgstr "Mémo de révision"
 
+# @ thin-out-revisions
 #: thin-out-revisions.php:822
 msgid "Memo: "
-msgstr "メモを入力: "
+msgstr "Mémo : "
 
 #. Plugin URI of the plugin/theme
 msgid "http://en.hetarena.com/thin-out-revisions"
@@ -200,6 +246,3 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "http://en.hetarena.com/"
 msgstr ""
-
-#~ msgid "Processing ..."
-#~ msgstr "実行中．．．"

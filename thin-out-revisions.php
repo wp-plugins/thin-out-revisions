@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin to thin out post/page revisions manually.
-Version: 1.4
+Version: 1.5
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 License: GPLv2
@@ -11,7 +11,7 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.4';
+	const VERSION        = '1.5';
 	const OPTION_VERSION = '1.4';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -34,6 +34,8 @@ class HM_TOR_Plugin_Loader {
 
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+		add_action( 'admin_head', array( &$this, 'admin_head' ), 20 );
+
 	}
 
 	function init() {
@@ -71,6 +73,9 @@ class HM_TOR_Plugin_Loader {
 		if ( $timestamp !== false ) {
 			wp_unschedule_event( $timestamp, 'hm_tor_cron_hook', array( intval( $prev['del_older_than'] ) ) );
 		}
+
+		// TODO
+		// change to call wp_clear_scheduled_hook
 	}
 
 	function admin_enqueue_scripts() {
@@ -100,11 +105,13 @@ class HM_TOR_Plugin_Loader {
 			'ajaxurl'                  => admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' ),
 			'latest_revision'          => $latest_revision,
 
-			'msg_thinout_comfirmation' => esc_attr( __( 'You really remove?', self::I18N_DOMAIN ) ),
+			'msg_thinout_comfirmation' => esc_attr( __( 'Do you really want to remove this?', self::I18N_DOMAIN ) ),
 			'msg_remove_completed'     => esc_attr( __( 'The revision(s) removed.', self::I18N_DOMAIN ) ),
 			'msg_ajax_error'           => esc_attr( __( 'Error in communication with server', self::I18N_DOMAIN ) ),
 			'msg_nothing_to_remove'    => esc_attr( __( 'Nothing to remove.', self::I18N_DOMAIN ) ),
-			'msg_thin_out'             => esc_attr( __( 'Remove revisions between two revisions above', self::I18N_DOMAIN ) )
+			'msg_thin_out'             => esc_attr( __( 'Remove revisions between two revisions above', self::I18N_DOMAIN ) ),
+			'msg_processing'           => esc_attr( __( 'Processing...', self::I18N_DOMAIN ) ),
+			'msg_include_from'         => esc_attr( __( "Include the 'From' revision", self::I18N_DOMAIN ) )
 		);
 
 		if ( $this->page == 'revision.php' ) {
@@ -220,6 +227,24 @@ class HM_TOR_Plugin_Loader {
 		register_setting( 'hm_tor_option_group', 'hm_tor_options', array( &$this, 'validate_options' ) );
 	}
 
+	function admin_head() {
+		// STYLE tag only for 3.6 or later
+?>
+<style>
+.comparing-two-revisions .revisions-controls {
+	height: 164px;
+}
+.comparing-two-revisions.pinned .revisions-controls {
+	height: 148px;
+}
+.comparing-two-revisions .revisions-tooltip {
+	bottom: 169px;
+}
+</style>
+<?php
+
+	}
+
 	function admin_notices() {
 		global $post;
 		$rev = wp_get_post_revisions( $post->ID );
@@ -290,6 +315,7 @@ class HM_TOR_Plugin_Loader {
 			echo "<div>" .  $msg . " (gmt_offset = " . get_option( 'gmt_offset' ) . ")</div>";
 
 		}
+		echo "</fieldset>\n";
 	}
 
 	public static function get_timestamp_for_cron( $hour, $min ) {
@@ -372,11 +398,11 @@ class HM_TOR_Plugin_Loader {
 							alert('<?php echo __( 'The day has to be an integer.', self::I18N_DOMAIN ); ?>');
 							return false;
 						}
-						if (!confirm('<?php echo __( "You really remove?", self::I18N_DOMAIN ); ?>' + ' (' + $('#hm_tor_del_older_than').val() + ' ' +
+						if (!confirm('<?php echo __( "Do you really want to remove this?", self::I18N_DOMAIN ); ?>' + ' (' + $('#hm_tor_del_older_than').val() + ' ' +
 						              '<?php echo __( 'days', self::I18N_DOMAIN ); ?>' + ')')) {
 							return false;
 						}
-						$('#hm_tor_rm_now_msg').html('<?php echo __( 'Processing ...', self::I18N_DOMAIN ); ?>');
+						$('#hm_tor_rm_now_msg').html('<?php echo __( 'Processing...', self::I18N_DOMAIN ); ?>');
 						$.ajax({
 							url: '<?php echo admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' ); ?>',
 							dataType: 'json',
@@ -477,7 +503,6 @@ class HM_TOR_Plugin_Loader_3_5 extends HM_TOR_Plugin_Loader {
 		// replace the default 'pre_post_update' handler
 		remove_action( 'pre_post_update', 'wp_save_post_revision' );
 		add_action( 'pre_post_update', array( &$this, 'pre_post_update' ) );
-		add_action( 'admin_head',       array( &$this, 'admin_head' ), 20 );
 	}
 
 	function has_copy_revision() {
@@ -585,8 +610,8 @@ class HM_TOR_Plugin_Loader_3_5 extends HM_TOR_Plugin_Loader {
 		$ajaxnonce = wp_create_nonce( self::PREFIX . "nonce" );
 		$ajaxurl   = admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' );
 
-		$msg_confirm         = __( "You really remove?", self::I18N_DOMAIN );
-		$msg_process         = __( 'Processing ...', self::I18N_DOMAIN );
+		$msg_confirm         = __( "Do you really want to remove this?", self::I18N_DOMAIN );
+		$msg_process         = __( 'Processing...', self::I18N_DOMAIN );
 		$msg_info            = count( $posts2del ) > 0 ? __( 'Following revisions will be removed.', self::I18N_DOMAIN ) : "";
 		$msg_info2           = sprintf( __( "To change revisions to remove, you have to press &quot;%s&quot; button after selection.", self::I18N_DOMAIN ), __( 'Compare Revisions' ) );
 		$msg_error           = __( 'Error in communication with server', self::I18N_DOMAIN );
