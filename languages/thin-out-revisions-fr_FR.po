@@ -1,12 +1,11 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Thin Out Revisions v1.4\n"
+"Project-Id-Version: Thin Out Revisions v1.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
 "POT-Creation-Date: 2013-12-15 22:49:27+00:00\n"
-"PO-Revision-Date: 2013-11-06 16:48:37+0000\n"
+"PO-Revision-Date: 2013-12-27 22:56:01+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,234 +14,210 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
-"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
 "X-Poedit-Basepath: ../\n"
 "X-Poedit-Bookmarks: \n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Textdomain-Support: yes\n"
+"X-Textdomain-Support: yes"
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:108 thin-out-revisions.php:401
+#: thin-out-revisions.php:108
+#: thin-out-revisions.php:401
 #: thin-out-revisions.php:613
+#@ thin-out-revisions
 msgid "Do you really want to remove this?"
 msgstr "Vous voulez réellement supprimer ?"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:109
+#@ thin-out-revisions
 msgid "The revision(s) removed."
 msgstr "Les révisions ont été supprimées"
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:110 thin-out-revisions.php:419
+#: thin-out-revisions.php:110
+#: thin-out-revisions.php:419
 #: thin-out-revisions.php:617
+#@ thin-out-revisions
 msgid "Error in communication with server"
 msgstr "Erreur dans la communication  avec le serveur"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:111
+#@ thin-out-revisions
 msgid "Nothing to remove."
 msgstr "Rien à supprimer"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:112
+#@ thin-out-revisions
 msgid "Remove revisions between two revisions above"
 msgstr "Supprimer les révisions parmi les deux ci-dessus"
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:113 thin-out-revisions.php:405
+#: thin-out-revisions.php:113
+#: thin-out-revisions.php:405
 #: thin-out-revisions.php:614
+#@ thin-out-revisions
 msgid "Processing..."
 msgstr "Traitement en cours..."
 
 #: thin-out-revisions.php:114
+#@ thin-out-revisions
 msgid "Include the 'From' revision"
-msgstr "Inclure la 'Depuis' révision."
+msgstr "Inclure la révision 'Depuis'."
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:153
+#, php-format
+#@ thin-out-revisions
 msgid "%s revision removed."
 msgid_plural "%s revisions removed."
 msgstr[0] "%s révision supprimée"
 msgstr[1] "%s révisions supprimées"
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:160 thin-out-revisions.php:484
+#: thin-out-revisions.php:160
+#: thin-out-revisions.php:484
+#@ thin-out-revisions
 msgid "Wrong session. Unable to process."
 msgstr "Mauvaise session. Impossible d'effectuer les tâches."
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:221 thin-out-revisions.php:293
+#: thin-out-revisions.php:221
+#: thin-out-revisions.php:293
+#@ thin-out-revisions
 msgid "Delete all revisions on initial publication"
 msgstr "Supprimer toutes les révisions lors de la publication initiale"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:224
+#@ thin-out-revisions
 msgid "Delete revisions as old as or older than"
 msgstr "Supprimer les révisions vieilles de ou plus vieilles de"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:253
-msgid ""
-"You should press update button without modification to make a copy revision. "
-"Or you will lose current content after update."
-msgstr ""
-"Vous devez appuyer sur le bouton de mise à jour sans modification à faire "
-"une révision de la copie. Ou vous perdrez le contenu actuel après mise à "
-"jour."
+#@ thin-out-revisions
+msgid "You should press update button without modification to make a copy revision. Or you will lose current content after update."
+msgstr "Vous devez appuyer sur le bouton de mise à jour sans modification à faire une révision de la copie. Ou vous perdrez le contenu actuel après mise à jour."
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:254
+#@ thin-out-revisions
 msgid "http://wordpress.org/plugins/thin-out-revisions/faq/"
 msgstr ""
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:255
+#@ thin-out-revisions
 msgid "See detail..."
 msgstr "Voir les détails..."
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:298 thin-out-revisions.php:402
+#: thin-out-revisions.php:298
+#: thin-out-revisions.php:402
+#@ thin-out-revisions
 msgid "days"
 msgstr "jours"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:300
+#@ thin-out-revisions
 msgid "Remove NOW"
 msgstr "Supprimer MAINTENANT"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:302
+#@ thin-out-revisions
 msgid "Run as scheduled task"
 msgstr "Planifier une tâche"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:305
+#@ thin-out-revisions
 msgid "Run as daily task. Run every day at"
 msgstr "Créer une tâche quotidienne. Lancer tous les jour à"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:314
+#, php-format
+#@ thin-out-revisions
 msgid "The task will begin after %d min."
 msgstr "La tâche va débuter dans %d min."
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:349 thin-out-revisions.php:398
+#: thin-out-revisions.php:349
+#: thin-out-revisions.php:398
+#@ thin-out-revisions
 msgid "The day has to be an integer."
 msgstr "Le jour doit être un nombre entier"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:362
+#@ thin-out-revisions
 msgid "Wrong time format."
-msgstr "Mauvais format le d'heure"
+msgstr "Mauvais format de l'heure"
 
-# @ default
 #: thin-out-revisions.php:437
+#@ default
 msgid "Save Changes"
 msgstr "Sauvegarder les changements"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:478
+#@ thin-out-revisions
 msgid "The task is successfully started."
 msgstr "La tâche a démarrée avec succès."
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:523 thin-out-revisions.php:544
+#: thin-out-revisions.php:523
+#: thin-out-revisions.php:544
+#@ thin-out-revisions
 msgid "Disable revisioning while quick editing"
 msgstr "Désactiver les révisions lors de l'édition rapide"
 
-# @ thin-out-revisions
-#: thin-out-revisions.php:525 thin-out-revisions.php:548
+#: thin-out-revisions.php:525
+#: thin-out-revisions.php:548
+#@ thin-out-revisions
 msgid "Disable revisioning while bulk editing"
 msgstr "Désactiver les révisions lors de l'édition en vrac"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:595
+#, php-format
+#@ thin-out-revisions
 msgid "Remove a revision &quot;%s&quot;"
 msgstr "Supprimer une révision &quot;%s&quot;"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:597
-msgid ""
-"Once you return to <a href=\"%s\">the edit page</a>, you could continue "
-"working with revisions. Or reselect existing revisions and press &quot;"
-"%s&quot; button."
-msgstr ""
-"Une fois que vous revenez à <a href=\"%s\">la page d'édition</a>, vous "
-"pouvez continuer à travailler avec les révisions. Ou resélectionnez les "
-"révisions existantes et pressez la touche &quot;%s&quot."
+#, php-format
+#@ thin-out-revisions
+msgid "Once you return to <a href=\"%s\">the edit page</a>, you could continue working with revisions. Or reselect existing revisions and press &quot;%s&quot; button."
+msgstr "Une fois que vous revenez à <a href=\"%s\">la page d'édition</a>, vous pouvez continuer à travailler avec les révisions. Ou resélectionnez les révisions existantes et pressez la touche &quot;%s&quot;."
 
-# @ default
-#: thin-out-revisions.php:597 thin-out-revisions.php:616
+#: thin-out-revisions.php:597
+#: thin-out-revisions.php:616
+#@ default
 msgid "Compare Revisions"
 msgstr "Comparer les révisions"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:605
+#, php-format
+#@ thin-out-revisions
 msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
-msgstr ""
-"Supprimer exclusivement les révisions entre &quot;%s&quot; et &quot;%s&quot;"
+msgstr "Supprimer exclusivement les révisions entre &quot;%s&quot; et &quot;%s&quot;"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:608
+#@ thin-out-revisions
 msgid "To update the compare-revision table, reload this page."
-msgstr ""
-"Pour mettre à jour le tableau de comparaison de révisions, actualisez cette "
-"page."
+msgstr "Pour mettre à jour le tableau de comparaison de révisions, actualisez cette page."
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:615
+#@ thin-out-revisions
 msgid "Following revisions will be removed."
 msgstr "Les révisions suivantes vont être supprimées."
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:616
-msgid ""
-"To change revisions to remove, you have to press &quot;%s&quot; button after "
-"selection."
-msgstr ""
-"Pour changer les révisions à supprimer, vous devez appuyer sur le bouton "
-"&quot;%s&quot; après la sélection."
+#, php-format
+#@ thin-out-revisions
+msgid "To change revisions to remove, you have to press &quot;%s&quot; button after selection."
+msgstr "Pour changer les révisions à supprimer, vous devez appuyer sur le bouton &quot;%s&quot; après la sélection."
 
-# @ thin-out-revisions
-#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.5)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
 #: thin-out-revisions.php:618
+#@ thin-out-revisions
 msgid "Thin Out Revisions"
-msgstr ""
+msgstr "Thin Out Revisions"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:619
-msgid ""
-"You selected revisions after loading this page but revisions to remove were "
-"determined at the time of loading. Are you sure to proceed?"
-msgstr ""
-"Vous avez sélectionné les révisions après le chargement de cette page, mais "
-"des révisions à supprimer ont été déterminées au moment du chargement. Êtes-"
-"vous sûr de vouloir continuer ?"
+#@ thin-out-revisions
+msgid "You selected revisions after loading this page but revisions to remove were determined at the time of loading. Are you sure to proceed?"
+msgstr "Vous avez sélectionné les révisions après le chargement de cette page, mais des révisions à supprimer ont été déterminées au moment du chargement. Êtes-vous sûr de vouloir continuer ?"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:815
+#@ thin-out-revisions
 msgid "Revision Memo"
 msgstr "Mémo de révision"
 
-# @ thin-out-revisions
 #: thin-out-revisions.php:822
+#@ thin-out-revisions
 msgid "Memo: "
 msgstr "Mémo : "
 
-#. Plugin URI of the plugin/theme
-msgid "http://en.hetarena.com/thin-out-revisions"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid "A plugin to thin out post/page revisions manually."
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "Hirokazu Matsui (blogger323)"
-msgstr ""
-
-#. Author URI of the plugin/theme
-msgid "http://en.hetarena.com/"
-msgstr ""

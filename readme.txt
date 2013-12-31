@@ -100,7 +100,7 @@ So some options became needless.
 
 1. fig. 1. The 'Thin Out' button to remove intermediate revisions
 2. fig. 2. A button to remove a single revision
-3. fig. 3. An option
+3. fig. 3. Options. You can remove old revisions on the fly or periodically.
 4. fig. 4. Memos are displayed with brackets
 
 
