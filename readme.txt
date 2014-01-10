@@ -8,7 +8,7 @@ Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Thin Out Revisions is a plugin to thin out post/page revisions. 
+Enables flexible revision management for you.
 
 == Description ==
 
@@ -29,7 +29,7 @@ If you are a user of WordPress prior to version 3.6, see [3.5 Revision Screen wi
 = When you publish a post =
 
 If you are a careful author, I guess you have many revisions as a result of preview checks.
-TOR can clean them.
+TOR can clean them when you first publish your post.
 Just simply enable the following option in the 'Settings' - 'Thin Out Revisions' admin page (fig. 3).
 
 * Delete revisions on initial publication
