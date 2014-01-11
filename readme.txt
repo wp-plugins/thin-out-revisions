@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
 Tested up to: 3.8
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,7 +106,7 @@ So some options became needless.
 
 == Changelog ==
 
-= 1.5.1 - Jan 11, 2014 =
+= 1.5.2 - Jan 11, 2014 =
 * Updated French resource.
 * Better description and Japanese translation for the plugin list page.
 
@@ -167,5 +167,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.5.1 =
+= 1.5.2 =
 Updated French resource. Thanks to mister klucha.

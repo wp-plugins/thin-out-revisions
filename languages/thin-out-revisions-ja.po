@@ -167,7 +167,7 @@ msgstr ""
 #. Plugin Name of the plugin/theme
 #: thin-out-revisions.php:620
 msgid "Thin Out Revisions"
-msgstr "リビジョンの削除"
+msgstr ""
 
 #: thin-out-revisions.php:621
 msgid ""
