@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.2
 Tested up to: 3.8
-Stable tag: 1.5
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,10 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.5.1 - Jan 11, 2014 =
+* Updated French resource.
+* Better description and Japanese translation for the plugin list page.
+
 = 1.5 - Dec 17, 2013 =
 * [NOTICE] This release (1.5.x) will be the last version to support WordPress 3.5 and prior.
 * A new feature to thin out including the 'From' revision.
@@ -163,5 +167,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.5 =
-This version introduces a new feature to thin out including the 'From' revision. And it is adjusted for new admin screens in WordPress 3.8.
+= 1.5.1 =
+Updated French resource. Thanks to mister klucha.
