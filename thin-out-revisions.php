@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.5.2
+Version: 1.6-beta
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -13,7 +13,7 @@ License: GPLv2
 
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.5';
+	const VERSION        = '1.6';
 	const OPTION_VERSION = '1.4';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -418,7 +418,7 @@ class HM_TOR_Plugin_Loader {
 							$('#hm_tor_rm_now_msg').html(response.msg);
 						})
 						.error (function() {
-							$('#hm_tor_rm_now_msg').html('<?php  __( 'Error in communication with server', self::I18N_DOMAIN ); ?>');
+							$('#hm_tor_rm_now_msg').html('<?php  echo __( 'Error in communication with server', self::I18N_DOMAIN ); ?>');
 						});
 
 						return false;
@@ -705,6 +705,12 @@ class HM_TOR_RevisionMemo_Loader {
 
 		// from WP3.6
 		add_filter( 'wp_save_post_revision_check_for_changes', array( &$this, 'wp_save_post_revision_check_for_changes' ), 200, 3 );
+
+		// load related modules
+		add_action( 'admin_enqueue_scripts',  array( &$this, 'admin_enqueue_scripts' ), 20 );
+
+		// ajax for memo editing
+		add_action( 'wp_ajax_hm_tor_do_ajax_update_memo', array( &$this, 'do_ajax_update_memo' ) );
 	}
 
 	function admin_head() {
@@ -738,10 +744,6 @@ class HM_TOR_RevisionMemo_Loader {
 
 		$postmemo = get_post_meta( $post->ID, "_hm_tor_memo", true ); // keep this line for pre 3.6 posts
 
-		if ( ! $memos && ! $postmemo ) {
-			return;
-		}
-
 		$latest_revision = $this->get_latest_revision( $post->ID );
 
 		if ( ! $postmemo && $latest_revision != 0 ) {
@@ -769,25 +771,59 @@ class HM_TOR_RevisionMemo_Loader {
 				jQuery('.post-revisions a').each(function () {
 					var parse_url = /(post|revision)=([0-9]+)/;
 					var result = parse_url.exec(jQuery(this).attr('href'));
-					if (result && memos[result[2]]) {
+					if (result) {
 						<?php
 								if ( $revision_php ) {
 						?>
-						jQuery(this).parent().next().append(' [' + memos[result[2]] + ']');
+						if (memos[result[2]]) {
+							jQuery(this).parent().next().append(' [' + memos[result[2]] + ']');
+						}
 						<?php
 								}
-								else {
+								else { // post.php
 						?>
-						jQuery(this).after(' [' + memos[result[2]] + ']');
+						var memo = (typeof memos[result[2]] === 'undefined' ? '' : memos[result[2]]);
+						jQuery(this).after('<span class="hm-tor-old-memo" id="hm-tor-memo-' + result[2] + '"> [' + memo + ']</span>');
 						<?php
 								}
 						?>
 					}
 				});
 
-				jQuery('#hm_tor_memo_current').html(' <?php if ($postmemo) { echo "[" . esc_js($postmemo) . "]"; } ?>');
+				jQuery('#hm-tor-memo-current').html(' <?php if ($postmemo) { echo "[" . esc_js($postmemo) . "]"; } ?>');
 			});
 		</script>
+<style>
+#hm-tor-memo-editor {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #f4f4f4;
+	z-index: 999;
+	border: 1px solid #dadada;
+	display: none;
+}
+
+#hm-tor-memo-editor input {
+	margin: 7px;
+}
+
+#hm-tor-memo-input {
+	width: 300px;
+}
+
+.hm-tor-modal-background {
+	position: fixed;
+	top: 0; left: 0; 	bottom: 0; right: 0;
+	background: none repeat scroll 0% 0% rgba(0, 0, 0, 0.10);
+	z-index: 998;
+	display: none;
+}
+
+.hm-tor-old-memo:hover {
+	color: #aeaeae;
+}
+</style>
 	<?php
 	} // end of 'admin_head'
 
@@ -823,8 +859,9 @@ class HM_TOR_RevisionMemo_Loader {
 		$memo = ''; // always empty
 		echo __( "Memo: ", self::I18N_DOMAIN );
 		?>
-		<input type="text" name="hm_tor_memo" value="<?php echo esc_attr( $memo ); ?>" style="width: 300px;" />
-		<span id="hm_tor_memo_current"></span>
+		<input type="text" name="hm_tor_memo" id="hm-tor-memo" value="<?php echo esc_attr( $memo ); ?>" style="width: 300px;" />
+		<span id="hm-tor-memo-current"></span>
+		<input id="hm-tor-copy-memo" type="button" class="button" value="<?php echo __( "Copy" ); ?>" style="margin: 0 10px">
 	<?php
 
 	}
@@ -884,6 +921,61 @@ class HM_TOR_RevisionMemo_Loader {
 		$this->last_revision_id = $last_revision->ID;
 
 		return $val;
+	}
+
+	function admin_enqueue_scripts() {
+		wp_enqueue_script( 'jquery-ui-position' );
+
+		// using parameters from HM_TOR_Plugin_Loader
+	}
+
+	function do_ajax_update_memo() {
+		if ( check_ajax_referer( self::PREFIX . "nonce", 'security', false ) ) {
+
+			if (filter_var($_REQUEST['revision'], FILTER_VALIDATE_INT) === false) {
+				echo json_encode( array(
+						"result" => "error",
+						"msg"    => __( "Invalid revision number.", self::I18N_DOMAIN )
+				) );
+				die;
+			}
+
+			$parent = wp_is_post_revision($_REQUEST['revision']);
+			if ($parent === false) {
+				echo json_encode( array(
+						"result" => "error",
+						"msg"    => __( "Wrong revision ID.", self::I18N_DOMAIN )
+				) );
+			}
+			else if ( !current_user_can( 'edit_post', $parent ) ) {
+				// TODO: test a case of a page
+				echo json_encode( array(
+						"result" => "error",
+						"msg"    => __( "You seem not to have a permission to update revisions.", self::I18N_DOMAIN )
+				) );
+			}
+			else if (update_metadata( 'post', $_REQUEST['revision'], '_hm_tor_memo', sanitize_text_field($_REQUEST['memo'])) !== false) {
+				echo json_encode( array(
+					"result" => "success",
+					"msg"    => __( "The memo is successfully updated.", self::I18N_DOMAIN )
+				) );
+			}
+			else {
+				// TODO: exclude cases of same content
+				echo json_encode( array(
+					"result" => "error",
+					"msg"    => __( "Failed to update the memo.", self::I18N_DOMAIN )
+				) );
+			}
+		}
+		else {
+			echo json_encode( array(
+				"result" => "error",
+				"msg"    => __( "Wrong session. Unable to process.", self::I18N_DOMAIN )
+			) );
+		}
+
+		die();
 	}
 
 } // end of 'HM_TOR_RevisionMemo_Loader

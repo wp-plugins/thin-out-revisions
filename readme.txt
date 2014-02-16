@@ -106,6 +106,10 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.6 - 2014 =
+* Now you can edit memos for old revisions.
+* Added a button to copy from the current memo.
+
 = 1.5.2 - Jan 11, 2014 =
 * Updated French resource.
 * Better description and Japanese translation for the plugin list page.
