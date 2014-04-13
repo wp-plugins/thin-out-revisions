@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/thin-out-revisions\n"
-"POT-Creation-Date: 2014-01-10 11:07:15+00:00\n"
+"POT-Creation-Date: 2014-04-13 00:36:34+00:00\n"
 "PO-Revision-Date: 2012-09-29 16:16+0900\n"
 "Last-Translator: Hirokazu Matsui <blogger323@gmail.com>\n"
 "Language-Team: English\n"
@@ -18,7 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: thin-out-revisions.php:110 thin-out-revisions.php:403
-#: thin-out-revisions.php:615
 msgid "Do you really want to remove this?"
 msgstr "本当に削除してよいですか？"
 
@@ -27,7 +26,6 @@ msgid "The revision(s) removed."
 msgstr "リビジョンが削除されました。"
 
 #: thin-out-revisions.php:112 thin-out-revisions.php:421
-#: thin-out-revisions.php:619
 msgid "Error in communication with server"
 msgstr "サーバーとの通信エラーが発生しました。"
 
@@ -40,7 +38,6 @@ msgid "Remove revisions between two revisions above"
 msgstr "中間リビジョンを削除する"
 
 #: thin-out-revisions.php:115 thin-out-revisions.php:407
-#: thin-out-revisions.php:616
 msgid "Processing..."
 msgstr "実行中．．．"
 
@@ -54,7 +51,8 @@ msgid_plural "%s revisions removed."
 msgstr[0] "%s個のリビジョンが削除されました。"
 msgstr[1] "%s個のリビジョンが削除されました。"
 
-#: thin-out-revisions.php:162 thin-out-revisions.php:486
+#: thin-out-revisions.php:162 thin-out-revisions.php:488
+#: thin-out-revisions.php:797
 msgid "Wrong session. Unable to process."
 msgstr "不正なセッションです。"
 
@@ -114,76 +112,49 @@ msgstr "時刻が不正です"
 msgid "Save Changes"
 msgstr ""
 
-#: thin-out-revisions.php:480
+#: thin-out-revisions.php:482
 msgid "The task is successfully started."
 msgstr "削除を開始しました"
 
-#: thin-out-revisions.php:525 thin-out-revisions.php:546
-msgid "Disable revisioning while quick editing"
-msgstr "クイック編集時はリビジョンを作成しない"
-
-#: thin-out-revisions.php:527 thin-out-revisions.php:550
-msgid "Disable revisioning while bulk editing"
-msgstr "一括編集時はリビジョンを作成しない"
-
-#: thin-out-revisions.php:597
-msgid "Remove a revision &quot;%s&quot;"
-msgstr "リビジョン「%s」を消去"
-
-#: thin-out-revisions.php:599
-msgid ""
-"Once you return to <a href=\"%s\">the edit page</a>, you could continue "
-"working with revisions. Or reselect existing revisions and press &quot;"
-"%s&quot; button."
-msgstr ""
-"リビジョン編集を続けるには一度<a href=\"%s\">編集ページ</a>にお戻りいただく"
-"か、残っているリビジョンを選択し直して「%s」ボタンを押してください。"
-
-#: thin-out-revisions.php:599 thin-out-revisions.php:618
-msgid "Compare Revisions"
-msgstr ""
-
-#: thin-out-revisions.php:607
-msgid "Remove revisions between &quot;%s&quot; and &quot;%s&quot; exclusively"
-msgstr "「%s」と「%s」の間のリビジョンを消去"
-
-#: thin-out-revisions.php:610
-msgid "To update the compare-revision table, reload this page."
-msgstr "最新の情報を得るためにこのページをリロードしてください。"
-
-#: thin-out-revisions.php:617
-msgid "Following revisions will be removed."
-msgstr "以下のリビジョンが消去されます。"
-
-#: thin-out-revisions.php:618
-msgid ""
-"To change revisions to remove, you have to press &quot;%s&quot; button after "
-"selection."
-msgstr ""
-"他のリビジョンを削除したい場合は比較するリビジョンを選び直し「%s」ボタンを押"
-"してください。"
-
-#. #-#-#-#-#  thin-out-revisions.pot (Thin Out Revisions 1.5.1)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
-#: thin-out-revisions.php:620
-msgid "Thin Out Revisions"
-msgstr ""
-
-#: thin-out-revisions.php:621
-msgid ""
-"You selected revisions after loading this page but revisions to remove were "
-"determined at the time of loading. Are you sure to proceed?"
-msgstr ""
-"ページがロードされた後にリビジョンを選択しても削除対象は変化しません。削除対"
-"象は意図した通りですか？"
-
-#: thin-out-revisions.php:817
+#: thin-out-revisions.php:670
 msgid "Revision Memo"
 msgstr "リビジョンメモ"
 
-#: thin-out-revisions.php:824
+#: thin-out-revisions.php:677
 msgid "Memo: "
 msgstr "メモを入力: "
+
+#: thin-out-revisions.php:681
+msgid "Copy"
+msgstr ""
+
+#: thin-out-revisions.php:755
+msgid "Invalid revision number."
+msgstr "リビジョン ID は番号でなければなりません。"
+
+#: thin-out-revisions.php:764
+msgid "Wrong revision ID."
+msgstr "リビジョン ID が不正です。"
+
+#: thin-out-revisions.php:770
+msgid "You seem not to have a permission to update revisions."
+msgstr "リビジョンを更新する権限がありません。"
+
+#: thin-out-revisions.php:776
+msgid "The memo is successfully updated."
+msgstr "メモが更新されました。"
+
+#: thin-out-revisions.php:783
+msgid "No difference between old and new memos."
+msgstr "同一のメモ内容です。"
+
+#: thin-out-revisions.php:789
+msgid "Failed to update the memo."
+msgstr "メモの更新に失敗しました。"
+
+#. Plugin Name of the plugin/theme
+msgid "Thin Out Revisions"
+msgstr ""
 
 #. Plugin URI of the plugin/theme
 msgid "http://en.hetarena.com/thin-out-revisions"
@@ -202,5 +173,3 @@ msgstr ""
 msgid "http://en.hetarena.com/"
 msgstr "http://hetarena.com/"
 
-#~ msgid "Processing ..."
-#~ msgstr "実行中．．．"

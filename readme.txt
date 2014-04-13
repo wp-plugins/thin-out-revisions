@@ -2,9 +2,9 @@
 Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
-Requires at least: 3.2
+Requires at least: 3.6
 Tested up to: 3.8
-Stable tag: 1.5.2
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Enables flexible revision management for you.
 
 = Abstract =
 
-As its default behavior, WordPress always makes a new revision when you save your post. 
+As its default behavior, WordPress makes a new revision when you update your post.
 This also happens when you do a preview before publication.
 This is too often even if you like revision control. Thin Out Revisions (TOR), a plugin 
 for WordPress, will help you to keep unwanted revisions out.
@@ -24,7 +24,7 @@ for WordPress, will help you to keep unwanted revisions out.
 You can remove intermediate revisions during comparing in 'compare two revisions' mode in revision.php. To do it, simply press the 'Thin Out' button (fig. 1 in the screenshots page). 
 And you can also remove each single revision from the Edit Post/Page screen (fig. 2).
 
-If you are a user of WordPress prior to version 3.6, see [3.5 Revision Screen with TOR](http://en.hetarena.com/thin-out-revisions/wp35 "3.5 Revision Screen")
+WordPress 3.5 and prior, which have an old revision screen, are no longer supported.
 
 = When you publish a post =
 
@@ -36,11 +36,11 @@ Just simply enable the following option in the 'Settings' - 'Thin Out Revisions'
 
 = Bulk erase of old revisions =
 
-From TOR 1.4, you can remove old revisions on the fly or daily as a scheduled task.
+You can remove old revisions on the fly or daily as a scheduled task (fig. 3).
 
 = Revision Memo =
 
-The Revision Memo feature enables you to put a short text note on revisions. See the last pictures (fig. 4) in screenshots page.
+The Revision Memo feature enables you to put a short text note on revisions. See the pictures (fig. 4, 5) in screenshots page.
 Make sure that you check the 'Revision Memo' screen option in Edit Post (Edit Page) screen.
 
 = More to Describe =
@@ -102,13 +102,15 @@ So some options became needless.
 2. fig. 2. A button to remove a single revision
 3. fig. 3. Options. You can remove old revisions on the fly or periodically.
 4. fig. 4. Memos are displayed with brackets
+5. fig. 5. You can use a editor to update old memos.
 
 
 == Changelog ==
 
-= 1.6 - 2014 =
+= 1.6 - Apr 13, 2014 =
 * Now you can edit memos for old revisions.
 * Added a button to copy from the current memo.
+* Required WordPress 3.6 or later. WP 3.5 and prior are no longer supported.
 
 = 1.5.2 - Jan 11, 2014 =
 * Updated French resource.
@@ -166,10 +168,10 @@ So some options became needless.
 * Now the code is using a class. No impact for end users.
 * Other some minor changes for stable operation.
 
-= 0.8 - Oct 1, 2013 =
+= 0.8 - Oct 1, 2012 =
 * The first version introduced in wordpress.org repository.
 
 == Upgrade Notice ==
 
-= 1.5.2 =
-Updated French resource. Thanks to mister klucha.
+= 1.6 =
+Introduced Memo editor. WordPress 3.5 and prior are no longer supported.

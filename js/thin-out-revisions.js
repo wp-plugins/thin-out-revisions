@@ -1,3 +1,19 @@
+/*
+ thin-out-revisions.js
+ Copyright 2013, 2014 Hirokazu Matsui (blogger323)
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License, version 2, as
+ published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ for the revision screen (wp-admin/revision.php)
+ */
+
 (function ($, window, document, undefined) {
 
 	$(document).ready(function () {
