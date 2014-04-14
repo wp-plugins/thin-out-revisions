@@ -98,10 +98,10 @@ So some options became needless.
 
 == Screenshots ==
 
-1. fig. 1. The 'Thin Out' button to remove intermediate revisions
-2. fig. 2. A button to remove a single revision
+1. fig. 1. The 'Thin Out' button to remove intermediate revisions.
+2. fig. 2. A button to remove a single revision.
 3. fig. 3. Options. You can remove old revisions on the fly or periodically.
-4. fig. 4. Memos are displayed with brackets
+4. fig. 4. Memos are displayed with brackets.
 5. fig. 5. You can use a editor to update old memos.
 
 
