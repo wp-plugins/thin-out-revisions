@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.6
+Version: 1.7
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -11,10 +11,13 @@ Domain Path: /languages
 License: GPLv2
 */
 
+if ( ! class_exists( 'SimplePie' ) ) :
+  require ABSPATH . WPINC . '/class-simplepie.php';
+endif;
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.6';
-	const OPTION_VERSION = '1.4';
+	const VERSION        = '1.7';
+	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
 	const PREFIX         = 'hm_tor_';
@@ -37,6 +40,10 @@ class HM_TOR_Plugin_Loader {
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 		add_action( 'admin_head', array( &$this, 'admin_head' ), 20 );
+
+        if ( self::get_hm_tor_option('history_note') === 'on' ) {
+            add_filter( 'the_content', array( &$this, 'the_content' ), intval( self::get_hm_tor_option( 'history_note_priority' ) ) );
+        }
 
 	}
 
@@ -226,6 +233,9 @@ class HM_TOR_Plugin_Loader {
 		add_settings_field( 'hm_tor_delete_old_revisions', __( 'Delete revisions as old as or older than', self::I18N_DOMAIN ),
 		  array( &$this, 'settings_field_delete_old_revisions' ), 'hm_tor_option_page', 'hm_tor_main' );
 
+        add_settings_field( 'hm_tor_history_note', __( 'Show memos on posts', self::I18N_DOMAIN ),
+          array( &$this, 'settings_field_history_note' ), 'hm_tor_option_page', 'hm_tor_main' );
+
 		register_setting( 'hm_tor_option_group', 'hm_tor_options', array( &$this, 'validate_options' ) );
 	}
 
@@ -246,6 +256,43 @@ class HM_TOR_Plugin_Loader {
 <?php
 
 	}
+
+    function the_content($text) {
+        global $wpdb, $post;
+
+
+        if ( (! is_single()) || is_front_page() ) {
+            return $text;
+        }
+
+        $show_history = get_post_meta($post->ID, "_hm_tor_show_history", true);
+        if ( $show_history == 'hide' || (self::get_hm_tor_option('default_action') == 'hide' && $show_history === '')) {
+            return $text;
+        }
+
+        $foot = self::get_hm_tor_option( 'history_head' ) .
+            '<dl>';
+
+
+        $revisions = $wpdb->get_results($wpdb->prepare(
+"SELECT tpm.meta_value, tp.post_date, tu.user_nicename
+ FROM $wpdb->posts tp, $wpdb->postmeta tpm, $wpdb->users tu
+ WHERE post_type = 'revision'
+ AND tp.ID = tpm.post_id
+ AND tp.post_author = tu.ID
+ AND post_parent = %d
+ AND meta_key = %s
+ ORDER BY post_date DESC",  $post->ID , '_hm_tor_memo'
+        ) );
+        foreach ( $revisions as $revision ) {
+            if (trim($revision->meta_value) !== '' && substr($revision->meta_value, 0, 1) !== '#') {
+                $foot .= '<dt>' . mysql2date( get_option( 'date_format' ), $revision->post_date) . ' - ' . $revision->user_nicename . '</dt><dd>' . $revision->meta_value . "</dd>\n";
+            }
+        }
+        $foot .= '</dl>';
+
+        return $text . $foot;
+    }
 
 	function admin_notices() {
 		global $post;
@@ -268,6 +315,11 @@ class HM_TOR_Plugin_Loader {
 			'del_older_than' => "90",
 			'schedule_enabled' => 'disabled',
 			'del_at'         => "3:00",
+
+            'history_note' => 'off',
+            'history_head' => '<hr><h3>History</h3>',
+            'history_note_priority' => '20',
+            'default_action' => 'show',
 		);
 
 		// The get_option doesn't seem to merge retrieved values and default values.
@@ -281,11 +333,11 @@ class HM_TOR_Plugin_Loader {
 
 	function settings_field( $key, $text ) {
 		$val = $this->get_hm_tor_option( $key );
-		echo "<fieldset><legend class='screen-reader-text'><span>" . $text . "</span></legend>\n";
-		echo "<label title='enable'><input type='radio' name='hm_tor_options[" . $key . "]' value='on' " .
+		echo "<fieldset><legend class='screen-reader-text'><span>" . esc_html($text) . "</span></legend>\n";
+		echo "<label title='enable'><input type='radio' name='hm_tor_options[" . esc_attr($key) . "]' value='on' " .
 				( $val == "on" ? "checked='checked'" : "" ) .
 				"/><span>On</span></label><br />\n";
-		echo "<label title='disable'><input type='radio' name='hm_tor_options[" . $key . "]' value='off' " .
+		echo "<label title='disable'><input type='radio' name='hm_tor_options[" . esc_attr($key) . "]' value='off' " .
 				( $val == "off" ? "checked='checked'" : "" ) .
 				"/><span>Off</span></label><br />\n";
 		echo "</fieldset>\n";
@@ -294,6 +346,49 @@ class HM_TOR_Plugin_Loader {
 	function settings_field_del_on_publish() {
 		$this->settings_field( 'del_on_publish', __( 'Delete all revisions on initial publication', self::I18N_DOMAIN ) );
 	}
+
+    function settings_field_history_note() {
+
+?>
+        <fieldset>
+            <legend class="screen-reader-text"><span><?php echo "Show notes"; ?></span></legend>
+            <p>
+                <label title='enable'><input type='radio' name='hm_tor_options[history_note]' value='on' <?php
+                    echo ( $this->get_hm_tor_option( 'history_note' ) == "on" ? "checked='checked'" : "" );
+                    ?>/><span>On</span></label>
+                <label title='disable'><input type='radio' name='hm_tor_options[history_note]' value='off' style="margin-left: 10px" <?php
+                    echo ( $this->get_hm_tor_option( 'history_note' ) == "off" ? "checked='checked'" : "" );
+                    ?>/><span>Off</span></label>
+            </p>
+            <p>
+                Hook Priority
+                <input class='small-text' id='hm_tor_history_note_priority' name='hm_tor_options[history_note_priority]' type='text' style="margin-left: 20px" value='<?php
+                echo esc_attr( $this->get_hm_tor_option( 'history_note_priority' ) );
+                ?>' />
+            </p>
+            <p>
+                Default Action
+                <label title='show'><input type='radio' name='hm_tor_options[default_action]' value='show' style="margin-left: 20px" <?php
+                    echo ( $this->get_hm_tor_option( 'default_action' ) == "show" ? "checked='checked'" : "" );
+                    ?>/><span>Show</span></label>
+                <label title='hide'><input type='radio' name='hm_tor_options[default_action]' value='hide' style="margin-left: 10px" <?php
+                    echo ( $this->get_hm_tor_option( 'default_action' ) == "hide" ? "checked='checked'" : "" );
+                    ?>/><span>Hide</span></label>
+            </p>
+            <p>
+                <label for="history_head">
+                    Header for Notes
+                </label>
+            </p>
+            <p>
+                <textarea name="hm_tor_options[history_head]" rows="10" cols="50" id="history_head" class="large-text code"><?php
+                    echo esc_html( $this->get_hm_tor_option( 'history_head' ) );
+                ?></textarea>
+            </p>
+        </fieldset>
+<?php
+
+    }
 
 	function settings_field_delete_old_revisions() {
 
@@ -356,6 +451,15 @@ class HM_TOR_Plugin_Loader {
 			$valid['del_older_than'] = $input['del_older_than'];
 		}
 
+        if ( filter_var( $input['history_note_priority'], FILTER_VALIDATE_INT ) === FALSE ) {
+            add_settings_error( 'hm_tor_history_note_priority', 'hm-tor-history-note-priority-error', __( 'The priority has to be an integer.', self::I18N_DOMAIN ) );
+            $valid['history_note_priority'] = $prev['history_note_priority'];
+            $valid_conf_for_cron = false;
+        }
+        else {
+            $valid['history_note_priority'] = $input['history_note_priority'];
+        }
+
 		$valid['schedule_enabled'] = 'disabled';
 		$valid['del_at'] = $prev['del_at'];
 		if ( isset($input['schedule_enabled']) && $input['schedule_enabled'] == 'enabled' ) {
@@ -379,6 +483,13 @@ class HM_TOR_Plugin_Loader {
 		$valid['quick_edit']     = ( ( isset($input['quick_edit']) && $input['quick_edit'] == "on" ) ? "on" : "off" );
 		$valid['bulk_edit']      = ( ( isset($input['bulk_edit']) && $input['bulk_edit'] == "on" ) ? "on" : "off" );
 		$valid['del_on_publish'] = ( ( isset($input['del_on_publish']) && $input['del_on_publish'] == "on" ) ? "on" : "off" );
+        $valid['history_note'] = ( ( isset($input['history_note']) && $input['history_note'] == "on" ) ? "on" : "off" );
+        $valid['default_action'] = ( ( isset($input['default_action']) && $input['default_action'] == "hide" ) ? "hide" : "show" );
+
+        // header for the history
+        $sps = new SimplePie_Sanitize();
+        $sps->strip_attributes( array('bgsound', 'expr', 'style', 'onclick', 'onerror', 'onfinish', 'onmouseover', 'onmouseout', 'onfocus', 'onblur', 'lowsrc', 'dynsrc') );
+        $valid['history_head'] = $sps->sanitize($input['history_head'], SIMPLEPIE_CONSTRUCT_HTML);
 
 		return $valid;
 	}
@@ -673,13 +784,42 @@ class HM_TOR_RevisionMemo_Loader {
 
 	function hm_tor_mbfunction( $post ) {
 		wp_nonce_field( plugin_basename( __FILE__ ), 'hm_tor_nonce' );
+
+        $show_history = get_post_meta( $post->ID, '_hm_tor_show_history', true );
+        if (! $show_history ) {
+            $show_history = HM_TOR_Plugin_Loader::get_hm_tor_option('default_action');
+        }
+
 		$memo = ''; // always empty
 		echo __( "Memo: ", self::I18N_DOMAIN );
-		?>
+	?>
+        <div>
 		<input type="text" name="hm_tor_memo" id="hm-tor-memo" value="<?php echo esc_attr( $memo ); ?>" style="width: 300px;" />
 		<span id="hm-tor-memo-current"></span>
 		<input id="hm-tor-copy-memo" type="button" class="button" value="<?php echo __( "Copy" ); ?>" style="margin: 0 10px">
+        </div>
+
+    <?php
+        if ( HM_TOR_Plugin_Loader::get_hm_tor_option('history_note') === 'on') {
+    ?>
+        <div style="margin: 10px 0">
+            <fieldset>
+                <legend class='screen-reader-text'><span><?php echo __( "Show Memos as a History: ", self::I18N_DOMAIN ); ?></span></legend>
+                <?php echo __( "Show Memos as a History: ", self::I18N_DOMAIN ); ?>
+                <label title="show" style="margin: 0 10px;">
+                    <input type='radio' name='hm_tor_show_history' id='hm-tor-show-history-show' value='show'
+                        <?php if ($show_history == 'show') { echo "checked='checked'"; } ?> />
+                    <span><?php echo __( "Show", self::I18N_DOMAIN );?></span>
+                </label>
+                <label title="hide">
+                    <input type='radio' name='hm_tor_show_history' id='hm-tor-show-history-hide' value='hide'
+                        <?php if ($show_history == 'hide') { echo "checked='checked'"; } ?> />
+                    <span><?php echo __( "Hide", self::I18N_DOMAIN );?></span>
+                </label>
+            </fieldset>
+        </div>
 	<?php
+        } // end of 'if ('
 
 	}
 
@@ -687,37 +827,43 @@ class HM_TOR_RevisionMemo_Loader {
 		global $wpdb;
 
 		if ( isset( $_POST['hm_tor_nonce'] ) && wp_verify_nonce( $_POST['hm_tor_nonce'], plugin_basename( __FILE__ ) ) &&
-				isset( $_POST['hm_tor_memo'] ) &&
 				( ( $_POST['post_type'] == 'post' && current_user_can( 'edit_post', $post_id ) )
 						|| ( $_POST['post_type'] == 'page' && current_user_can( 'edit_page', $post_id ) ) )
 		) {
-			if ( $parent = wp_is_post_revision( $post_id ) ) {
-				// saving a revision
+            if ( isset( $_POST['hm_tor_memo'] ) ) { // revision memo
+                if ( $parent = wp_is_post_revision( $post_id ) ) {
+                    // saving a revision
 
-				if ( $_POST['hm_tor_memo'] !== '' ) {
-					// We cannot use update_post_meta for revisions because it will add metadata to the parent.
-					update_metadata( 'post', $post_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
-				}
-			}
-			else {
-				// saving a post
+                    if ( $_POST['hm_tor_memo'] !== '' ) {
+                        // We cannot use update_post_meta for revisions because it will add metadata to the parent.
+                        update_metadata( 'post', $post_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
+                    }
+                }
+                else {
+                    // saving a post
 
-				if ($this->last_revision_id != 0) {
+                    if ($this->last_revision_id != 0) {
 
-					// for compatibility for WP3.5 and older.
-					$postmemo = get_post_meta( $post_id, '_hm_tor_memo', true);
-					if ( $postmemo ){
-						update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', $postmemo );
-						delete_post_meta( $post_id, '_hm_tor_memo' );
-					}
+                        // for compatibility for WP3.5 and older.
+                        $postmemo = get_post_meta( $post_id, '_hm_tor_memo', true);
+                        if ( $postmemo ){
+                            update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', $postmemo );
+                            delete_post_meta( $post_id, '_hm_tor_memo' );
+                        }
 
-					// If we have a new memo value, update the memo even no new revision is created.
-					if ( $this->no_new_revision && $_POST['hm_tor_memo'] !== '' ) {
-						// Attach the new memo to the latest revision
-						update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
-					}
-				}
-			}
+                        // If we have a new memo value, update the memo even no new revision is created.
+                        if ( $this->no_new_revision && $_POST['hm_tor_memo'] !== '' ) {
+                            // Attach the new memo to the latest revision
+                            update_metadata( 'post', $this->last_revision_id, '_hm_tor_memo', sanitize_text_field( $_POST['hm_tor_memo'] ) );
+                        }
+                    }
+                }
+            }
+
+            if ( isset( $_POST['hm_tor_show_history'] ) && ( ! wp_is_post_revision( $post_id ) ) ) {
+                update_post_meta( $post_id, '_hm_tor_show_history', $_POST['hm_tor_show_history'] == 'show' ? 'show' : 'hide' );
+            }
+
 		} // if ( isset ...
 	}
 
