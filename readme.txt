@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.7
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,10 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.7.1 - Sep 18, 2014 =
+* [Fixed] Now the memo list shows user display_name instead of user_nicename.
+* Now DL tags for the memo list have a class attribute, 'hm-tor-memo-list'.
+
 = 1.7 - Aug 27, 2014 =
 * A new feature to show Revision Memos on a post. Check details ([English](http://en.hetarena.com/thin-out-revisions#f4), [Japanese](http://hetarena.com/archives/2625)). It is still an experimental implementation. It's a subject to change.
 * WordPress 4.0 compliant
@@ -177,7 +181,7 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.7 =
-A new feature to show Revision Memos on a post.
+= 1.7.1 =
+some fixes related to Revision Memos
 
 
