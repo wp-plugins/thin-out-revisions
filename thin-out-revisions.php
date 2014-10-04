@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.7.1
+Version: 1.7.2
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -16,7 +16,7 @@ if ( ! class_exists( 'SimplePie' ) ) :
 endif;
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.7';
+	const VERSION        = '1.7.2';
 	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -48,15 +48,6 @@ class HM_TOR_Plugin_Loader {
 	}
 
 	function init() {
-		$uri = parse_url( $_SERVER['REQUEST_URI'] );
-
-		if ( strpos( $uri['path'], '/revision.php' ) ) {
-			$this->page = 'revision.php';
-		}
-		else if ( strpos( $uri['path'], '/post.php' ) ) {
-			add_action( 'admin_notices', array( &$this, 'admin_notices' ) );
-			$this->page = 'post.php';
-		}
 	}
 
 	function plugins_loaded() {
@@ -90,7 +81,7 @@ class HM_TOR_Plugin_Loader {
 	function admin_enqueue_scripts() {
 		// 'admin_enqueue_scripts'
 		//trigger_error('enqueueing script');
-		global $post;
+		global $post, $pagenow;
 		$latest_revision = 0;
 
 		if ( $post && $post->ID ) {
@@ -123,12 +114,12 @@ class HM_TOR_Plugin_Loader {
 			'msg_include_from'         => esc_attr( __( "Include the 'From' revision", self::I18N_DOMAIN ) )
 		);
 
-		if ( $this->page == 'revision.php' ) {
+		if ( $pagenow === 'revision.php' ) {
 			// loading in footer
 			wp_enqueue_script( 'thin-out-revisions', plugins_url( '/js/thin-out-revisions.js', __FILE__ ), array( 'revisions' ), false, true );
 			wp_localize_script( 'thin-out-revisions', self::PREFIX . 'params', $params );
 		}
-		else if ( $this->page == 'post.php' ) {
+		else if ( $pagenow === 'post.php' ) {
 			wp_enqueue_script( 'thin-out-revisions-post', plugins_url( '/js/thin-out-revisions-post.js', __FILE__ ), array(), false, true );
 			wp_localize_script( 'thin-out-revisions-post', self::PREFIX . 'params', $params );
 		}
@@ -317,7 +308,7 @@ class HM_TOR_Plugin_Loader {
 			'del_at'         => "3:00",
 
             'history_note' => 'off',
-            'history_head' => '<hr><h3>History</h3>',
+            'history_head' => __( '<hr><h3>History</h3>' , self::I18N_DOMAIN ),
             'history_note_priority' => '20',
             'default_action' => 'show',
 		);
@@ -361,23 +352,23 @@ class HM_TOR_Plugin_Loader {
                     ?>/><span>Off</span></label>
             </p>
             <p>
-                Hook Priority
+                <?php echo __( 'Hook Priority', self::I18N_DOMAIN ); ?>
                 <input class='small-text' id='hm_tor_history_note_priority' name='hm_tor_options[history_note_priority]' type='text' style="margin-left: 20px" value='<?php
                 echo esc_attr( $this->get_hm_tor_option( 'history_note_priority' ) );
                 ?>' />
             </p>
             <p>
-                Default Action
+                <?php echo __( 'Default Action', self::I18N_DOMAIN ) ?>
                 <label title='show'><input type='radio' name='hm_tor_options[default_action]' value='show' style="margin-left: 20px" <?php
                     echo ( $this->get_hm_tor_option( 'default_action' ) == "show" ? "checked='checked'" : "" );
-                    ?>/><span>Show</span></label>
+                    ?>/><span><?php echo __( 'Show', self::I18N_DOMAIN ); ?></span></label>
                 <label title='hide'><input type='radio' name='hm_tor_options[default_action]' value='hide' style="margin-left: 10px" <?php
                     echo ( $this->get_hm_tor_option( 'default_action' ) == "hide" ? "checked='checked'" : "" );
-                    ?>/><span>Hide</span></label>
+                    ?>/><span><?php echo __( 'Hide', self::I18N_DOMAIN ); ?></span></label>
             </p>
             <p>
                 <label for="history_head">
-                    Header for Notes
+                    <?php echo __( 'Header for Notes', self::I18N_DOMAIN ); ?>
                 </label>
             </p>
             <p>
@@ -642,15 +633,13 @@ class HM_TOR_RevisionMemo_Loader {
 	}
 
 	function admin_head() {
-		global $left, $right, $post, $wpdb;
-
-		$uri = parse_url( $_SERVER['REQUEST_URI'] );
+		global $left, $right, $post, $wpdb, $pagenow;
 
 		$revision_php = false;
-		if ( strpos( $uri['path'], '/revision.php' ) ) {
+		if ( $pagenow === 'revision.php' ) {
 			$revision_php = true;
 		}
-		else if ( strpos( $uri['path'], '/post.php' ) ) {
+		else if ( $pagenow === 'post.php' ) {
 		}
 		else {
 			return;
@@ -804,8 +793,8 @@ class HM_TOR_RevisionMemo_Loader {
     ?>
         <div style="margin: 10px 0">
             <fieldset>
-                <legend class='screen-reader-text'><span><?php echo __( "Show Memos as a History: ", self::I18N_DOMAIN ); ?></span></legend>
-                <?php echo __( "Show Memos as a History: ", self::I18N_DOMAIN ); ?>
+                <legend class='screen-reader-text'><span><?php echo __( "Show memos on the post: ", self::I18N_DOMAIN ); ?></span></legend>
+                <?php echo __( "Show memos on the post: ", self::I18N_DOMAIN ); ?>
                 <label title="show" style="margin: 0 10px;">
                     <input type='radio' name='hm_tor_show_history' id='hm-tor-show-history-show' value='show'
                         <?php if ($show_history == 'show') { echo "checked='checked'"; } ?> />

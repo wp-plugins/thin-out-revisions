@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.6
 Tested up to: 4.0
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,10 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.7.2 - Oct 4, 2014 =
+* [Fixed] An Ajax error on IIS servers.
+* Japanese resources.
+
 = 1.7.1 - Sep 18, 2014 =
 * [Fixed] Now the memo list shows user display_name instead of user_nicename.
 * Now DL tags for the memo list have a class attribute, 'hm-tor-memo-list'.
@@ -182,6 +186,4 @@ So some options became needless.
 == Upgrade Notice ==
 
 = 1.7.1 =
-some fixes related to Revision Memos
-
-
+[Fixed] An Ajax error on IIS servers.
