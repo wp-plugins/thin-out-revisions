@@ -111,7 +111,7 @@ class HM_TOR_Plugin_Loader {
 
 		$params = array(
 			'nonce'                    => wp_create_nonce( self::PREFIX . "nonce" ),
-			'ajaxurl'                  => admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' ),
+			'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
 			'latest_revision'          => $latest_revision,
 
 			'msg_thinout_comfirmation' => esc_attr( __( 'Do you really want to remove this?', self::I18N_DOMAIN ) ),
@@ -517,7 +517,7 @@ class HM_TOR_Plugin_Loader {
 						}
 						$('#hm_tor_rm_now_msg').html('<?php echo __( 'Processing...', self::I18N_DOMAIN ); ?>');
 						$.ajax({
-							url: '<?php echo admin_url( 'admin-ajax.php', isset( $_SERVER["HTTPS"] ) ? 'https' : 'http' ); ?>',
+							url: '<?php echo admin_url( 'admin-ajax.php' ); ?>',
 							dataType: 'json',
 							data: {
 								action: 'hm_tor_do_ajax_start_delete_old_revisions',
