@@ -3,8 +3,8 @@ Contributors: blogger323
 Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.6
-Tested up to: 4.0
-Stable tag: 1.7.2
+Tested up to: 4.1
+Stable tag: 1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,11 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.8 - Dec 20, 2014 =
+* Now you can use the memo editor also in the revision comparison screen.
+* WordPress 4.1 compatible.
+* Thanks for all reviewers and users. You encouraged me a lot. I wish all of you a merry christmas and a happy new year!
+
 = 1.7.2 - Oct 4, 2014 =
 * [Fixed] An Ajax error on IIS servers.
 * Japanese resources.
@@ -185,5 +190,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.7.1 =
-[Fixed] An Ajax error on IIS servers.
+= 1.8 =
+WordPress 4.1 compatible
