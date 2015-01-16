@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.8
+Version: 1.8.1
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -16,13 +16,15 @@ if ( ! class_exists( 'SimplePie' ) ) :
 endif;
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.8';
+	const VERSION        = '1.8.1';
 	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
 	const PREFIX         = 'hm_tor_';
 
 	public $page = ''; // 'revision.php' or 'post.php'
+
+	static $instance = false;
 
 	function __construct() {
 		register_activation_hook( __FILE__, array( &$this, 'plugin_activation' ) );
@@ -45,6 +47,12 @@ class HM_TOR_Plugin_Loader {
             add_filter( 'the_content', array( &$this, 'the_content' ), intval( self::get_hm_tor_option( 'history_note_priority' ) ) );
         }
 
+	}
+
+	public static function getInstance() {
+		if ( !self::$instance )
+			self::$instance = new self;
+		return self::$instance;
 	}
 
 	function init() {
@@ -74,8 +82,7 @@ class HM_TOR_Plugin_Loader {
 			wp_unschedule_event( $timestamp, 'hm_tor_cron_hook', array( intval( $prev['del_older_than'] ) ) );
 		}
 
-		// TODO
-		// change to call wp_clear_scheduled_hook
+		// TODO: change to call wp_clear_scheduled_hook
 	}
 
 	function admin_enqueue_scripts() {
@@ -111,7 +118,9 @@ class HM_TOR_Plugin_Loader {
 			'msg_nothing_to_remove'    => esc_attr( __( 'Nothing to remove.', self::I18N_DOMAIN ) ),
 			'msg_thin_out'             => esc_attr( __( 'Remove revisions between two revisions above', self::I18N_DOMAIN ) ),
 			'msg_processing'           => esc_attr( __( 'Processing...', self::I18N_DOMAIN ) ),
-			'msg_include_from'         => esc_attr( __( "Include the 'From' revision", self::I18N_DOMAIN ) )
+			'msg_include_from'         => esc_attr( __( "Include the 'From' revision", self::I18N_DOMAIN ) ),
+			'msg_delete'               => esc_attr( __( 'Delete' ) ),
+			'msg_deleted'              => esc_attr( __( 'Deleted' ) )
 		);
 
 		if ( $pagenow === 'revision.php' || $pagenow === 'post.php' ) {
@@ -135,8 +144,10 @@ class HM_TOR_Plugin_Loader {
 
 				if ( $post ) {
 					$post_type = get_post_type( $post->post_parent );
-					if ( ( $post_type == 'post' && current_user_can( 'edit_post', $revid ) )
-							|| ( $post_type == 'page' && current_user_can( 'edit_page', $revid ) )
+					$post_type_object = get_post_type_object( $post_type );
+
+					if ( ($post_type_object->capability_type == 'post' && current_user_can( 'edit_post', $revid ) )
+							|| ( $post_type_object->capability_type == 'page' && current_user_can( 'edit_page', $revid ) )
 					) {
 						if ( wp_delete_post_revision( $revid ) ) {
 							array_push( $deleted, $revid );
@@ -606,6 +617,8 @@ class HM_TOR_RevisionMemo_Loader {
 	private $no_new_revision  = false;
 	private $last_revision_id = 0;
 
+	static $instance = false;
+
 	// Constructor
 	function __construct() {
 
@@ -626,6 +639,12 @@ class HM_TOR_RevisionMemo_Loader {
 
 		// ajax for memo editing
 		add_action( 'wp_ajax_hm_tor_do_ajax_update_memo', array( &$this, 'do_ajax_update_memo' ) );
+	}
+
+	public static function getInstance() {
+		if ( !self::$instance )
+			self::$instance = new self;
+		return self::$instance;
 	}
 
 	function admin_head() {
@@ -796,14 +815,18 @@ class HM_TOR_RevisionMemo_Loader {
 	}
 
 	function save_post( $post_id ) {
+		// save_post handler:
+		// - add or update a memo for posts/revisions
 		global $wpdb;
 
+		$parent = wp_is_post_revision( $post_id );
+		$post_type_object = get_post_type_object( $parent ? get_post_type($parent) : $_POST['post_type'] );
 		if ( isset( $_POST['hm_tor_nonce'] ) && wp_verify_nonce( $_POST['hm_tor_nonce'], plugin_basename( __FILE__ ) ) &&
-				( ( $_POST['post_type'] == 'post' && current_user_can( 'edit_post', $post_id ) )
-						|| ( $_POST['post_type'] == 'page' && current_user_can( 'edit_page', $post_id ) ) )
+				( ( $post_type_object->capability_type == 'post' && current_user_can( 'edit_post', $post_id ) )
+						|| ( $post_type_object->capability_type == 'page' && current_user_can( 'edit_page', $post_id ) ) )
 		) {
             if ( isset( $_POST['hm_tor_memo'] ) ) { // revision memo
-                if ( $parent = wp_is_post_revision( $post_id ) ) {
+                if ( $parent ) {
                     // saving a revision
 
                     if ( $_POST['hm_tor_memo'] !== '' ) {
@@ -832,7 +855,8 @@ class HM_TOR_RevisionMemo_Loader {
                 }
             }
 
-            if ( isset( $_POST['hm_tor_show_history'] ) && ( ! wp_is_post_revision( $post_id ) ) ) {
+            if ( isset( $_POST['hm_tor_show_history'] ) && ( ! $parent ) ) {
+				// saving a post
                 update_post_meta( $post_id, '_hm_tor_show_history', $_POST['hm_tor_show_history'] == 'show' ? 'show' : 'hide' );
             }
 
@@ -876,13 +900,19 @@ class HM_TOR_RevisionMemo_Loader {
 			}
 
 			$parent = wp_is_post_revision($_REQUEST['revision']);
+			if ($parent) {
+				$post_type = get_post_type($parent);
+				$post_type_object = get_post_type_object($post_type);
+			}
+
 			if ($parent === false) {
 				echo json_encode( array(
 						"result" => "error",
 						"msg"    => __( "Wrong revision ID.", self::I18N_DOMAIN )
 				) );
 			}
-			else if ( !current_user_can( 'edit_post', $parent ) ) {
+			else if ( ( $post_type_object->capability_type == 'post' && !current_user_can( 'edit_post', $parent ) ) ||
+				       ( $post_type_object->capability_type == 'page' && !current_user_can( 'edit_page', $parent ) ) ) {
 				echo json_encode( array(
 						"result" => "error",
 						"msg"    => __( "You seem not to have a permission to update revisions.", self::I18N_DOMAIN )
@@ -922,10 +952,10 @@ class HM_TOR_RevisionMemo_Loader {
 } // end of 'HM_TOR_RevisionMemo_Loader
 
 
-// I don't know why but I need make them global for unit tests
+// for unit tests
 global $hm_tor_plugin_loader, $hm_tor_revisionmemo_loader;
 
 // Load HM_TOR_Plugin_Loader first.
-$hm_tor_plugin_loader = new HM_TOR_Plugin_Loader();
-$hm_tor_revisionmemo_loader = new HM_TOR_RevisionMemo_Loader();
+$hm_tor_plugin_loader = HM_TOR_Plugin_Loader::getInstance();
+$hm_tor_revisionmemo_loader = HM_TOR_RevisionMemo_Loader::getInstance();
 

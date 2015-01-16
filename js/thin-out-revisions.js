@@ -62,7 +62,7 @@
             var parse_url = /(post|revision)=([0-9]+)/;
             var result = parse_url.exec($(this).attr('href'));
             if (result && result[2] != hm_tor_params.latest_revision) {
-                $(this).parent().append('<input id="tor-rm-' + result[2] + '" class="button button-primary tor-rm" type="submit" value="Delete" style="margin: 0 10px"/>');
+                $(this).parent().append('<input id="tor-rm-' + result[2] + '" class="button button-primary tor-rm" type="submit" value="' + hm_tor_params.msg_delete + '" style="margin: 0 10px"/>');
             }
         }); // '.post-revisions a' each
 
@@ -90,13 +90,12 @@
                 .success(function (response) {
                     $(btn).parent().css('text-decoration', 'line-through');
                     $(btn).attr('disabled', 'disabled');
-                    $(btn).attr('value', 'Deleted');
+                    $(btn).attr('value', hm_tor_params.msg_deleted);
                 })
                 .error(function () {
                     alert(hm_tor_params.msg_ajax_error);
                     $(btn).attr('value', 'Delete'); /* reset */
                 });
-            // TODO: i18n for 'Delete' and 'Deleted'
 
             return false;
         }); // '.tor-rm' click
@@ -251,16 +250,19 @@
 
                                 var fromid = (this.model.get('from') ? this.model.get('from').get('id') : '');
                                 var toid = (this.model.get('to') ? this.model.get('to').get('id') : '');
+
                                 if (fromid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[fromid]) {
                                     var $f = $('.diff-meta-from .diff-title');
+                                    var m = (typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[fromid]) ? hm_tor_memos[fromid] : '';
                                     if (!/\[/.test($f.text())) { // avoid duplicated memos
-                                        $f.append('<div class="hm-tor-old-memo" id="hm-tor-memo-' + fromid + '">[' + hm_tor_memos[fromid] + ']</div>');
+                                        $f.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + fromid + '">[' + m + ']</span></div>');
                                     }
                                 }
                                 if (toid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[toid]) {
                                     var $t = $('.diff-meta-to .diff-title');
+                                    var m = (typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[toid]) ? hm_tor_memos[toid] : '';
                                     if (!/\[/.test($t.text())) {
-                                        $t.append('<div class="hm-tor-old-memo" id="hm-tor-memo-' + toid + '">[' + hm_tor_memos[toid] + ']</div>');
+                                        $t.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + toid + '">[' + m + ']</span></div>');
                                     }
                                 }
                                 return this;

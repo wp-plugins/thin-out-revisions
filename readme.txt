@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.6
 Tested up to: 4.1
-Stable tag: 1.8
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,10 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.8.1 - Jan 16, 2015 =
+* Custom post type support.
+* Updated French language resource. Thanks to mister klucha.
+
 = 1.8 - Dec 20, 2014 =
 * Now you can use the memo editor also in the revision comparison screen.
 * WordPress 4.1 compatible.
@@ -190,5 +194,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.8 =
-WordPress 4.1 compatible
+= 1.8.1 =
+Custom post type support. Updated French resource.
