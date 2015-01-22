@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.8.1
+Version: 1.8.2
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -16,7 +16,7 @@ if ( ! class_exists( 'SimplePie' ) ) :
 endif;
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.8.1';
+	const VERSION        = '1.8.2';
 	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -125,7 +125,8 @@ class HM_TOR_Plugin_Loader {
 
 		if ( $pagenow === 'revision.php' || $pagenow === 'post.php' ) {
 			// loading in footer
-			wp_enqueue_script( 'thin-out-revisions', plugins_url( '/js/thin-out-revisions.js', __FILE__ ), array('jquery-ui-position', 'revisions'), false, true );
+			wp_enqueue_script( 'thin-out-revisions', plugins_url( '/js/thin-out-revisions.js', __FILE__ ),
+                $pagenow === 'revision.php' ? array('jquery-ui-position', 'revisions') : array('jquery-ui-position'), false, true );
 			wp_localize_script( 'thin-out-revisions', self::PREFIX . 'params', $params );
 		}
 

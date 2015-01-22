@@ -4,7 +4,7 @@ Donate link: http://en.hetarena.com/donate
 Tags: revisions, revision, posts, admin
 Requires at least: 3.6
 Tested up to: 4.1
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -107,6 +107,9 @@ So some options became needless.
 
 == Changelog ==
 
+= 1.8.2 - Jan 22, 2015 =
+* [Fixed] JavaScript undefined error causing failure to switch between Visual and Text mode on the Edit screen in WordPress 4.0 (and possibly prior versions).
+
 = 1.8.1 - Jan 16, 2015 =
 * Custom post type support.
 * Updated French language resource. Thanks to mister klucha.
@@ -194,5 +197,5 @@ So some options became needless.
 
 == Upgrade Notice ==
 
-= 1.8.1 =
-Custom post type support. Updated French resource.
+= 1.8.2 =
+Minor bug fix.
