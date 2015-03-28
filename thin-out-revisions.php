@@ -3,7 +3,7 @@
 Plugin Name: Thin Out Revisions
 Plugin URI: http://en.hetarena.com/thin-out-revisions
 Description: A plugin for better revision management. Enables flexible management for you.
-Version: 1.8.2
+Version: 1.8.3
 Author: Hirokazu Matsui (blogger323)
 Author URI: http://en.hetarena.com/
 Text Domain: thin-out-revisions
@@ -16,7 +16,7 @@ if ( ! class_exists( 'SimplePie' ) ) :
 endif;
 
 class HM_TOR_Plugin_Loader {
-	const VERSION        = '1.8.2';
+	const VERSION        = '1.8.3';
 	const OPTION_VERSION = '1.7';
 	const OPTION_KEY     = 'hm_tor_options';
 	const I18N_DOMAIN    = 'thin-out-revisions';
@@ -627,7 +627,7 @@ class HM_TOR_RevisionMemo_Loader {
 		add_action( 'add_meta_boxes', array( &$this, 'add_meta_box' ) );
 
 		// Add metadata to a revisions to be saved
-		add_action( 'save_post', array( &$this, 'save_post' ) );
+		add_action( 'save_post', array( &$this, 'save_post' ), 10, 3);
 
 		// Showing text input area for memo in revision.php.
 		add_action( 'admin_head', array( &$this, 'admin_head' ) );
@@ -815,13 +815,13 @@ class HM_TOR_RevisionMemo_Loader {
 
 	}
 
-	function save_post( $post_id ) {
+	function save_post( $post_id, $post, $update ) {
 		// save_post handler:
 		// - add or update a memo for posts/revisions
 		global $wpdb;
 
 		$parent = wp_is_post_revision( $post_id );
-		$post_type_object = get_post_type_object( $parent ? get_post_type($parent) : $_POST['post_type'] );
+		$post_type_object = get_post_type_object( $parent ? get_post_type($parent) : (empty($_POST['post_type']) ? $post->post_type : $_POST['post_type'] ) );
 		if ( isset( $_POST['hm_tor_nonce'] ) && wp_verify_nonce( $_POST['hm_tor_nonce'], plugin_basename( __FILE__ ) ) &&
 				( ( $post_type_object->capability_type == 'post' && current_user_can( 'edit_post', $post_id ) )
 						|| ( $post_type_object->capability_type == 'page' && current_user_can( 'edit_page', $post_id ) ) )
