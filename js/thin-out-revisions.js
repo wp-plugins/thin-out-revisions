@@ -251,18 +251,16 @@
                                 var fromid = (this.model.get('from') ? this.model.get('from').get('id') : '');
                                 var toid = (this.model.get('to') ? this.model.get('to').get('id') : '');
 
-                                if (fromid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[fromid]) {
+                                if (fromid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[fromid] !== 'undefined') {
                                     var $f = $('.diff-meta-from .diff-title');
-                                    var m = (typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[fromid]) ? hm_tor_memos[fromid] : '';
                                     if (!/\[/.test($f.text())) { // avoid duplicated memos
-                                        $f.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + fromid + '">[' + m + ']</span></div>');
+                                        $f.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + fromid + '">[' + hm_tor_memos[fromid] + ']</span></div>');
                                     }
                                 }
-                                if (toid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[toid]) {
+                                if (toid && typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[toid] !== 'undefined') {
                                     var $t = $('.diff-meta-to .diff-title');
-                                    var m = (typeof(hm_tor_memos) !== 'undefined' && hm_tor_memos[toid]) ? hm_tor_memos[toid] : '';
                                     if (!/\[/.test($t.text())) {
-                                        $t.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + toid + '">[' + m + ']</span></div>');
+                                        $t.append('<div><span class="hm-tor-old-memo" id="hm-tor-memo-' + toid + '">[' + hm_tor_memos[toid] + ']</span></div>');
                                     }
                                 }
                                 return this;
